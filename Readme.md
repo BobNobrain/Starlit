@@ -1,4 +1,6 @@
 #Starlit
 Strategy game for Android
 
-_No screens or description provided yet._
+Current developing status:
+
+![Screenshot](https://raw.githubusercontent.com/BobNobrain/Starlit/master/misc/img/screen-15-08-16.jpg)
