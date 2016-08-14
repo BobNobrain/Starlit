@@ -1,11 +1,18 @@
 package ru.sdevteam.starlit;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.view.*;
-import ru.sdevteam.starlit.ui.Label;
-import ru.sdevteam.starlit.world.*;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import ru.sdevteam.starlit.ui.CompoundComponent;
+import ru.sdevteam.starlit.ui.DynamicFoneComponent;
+import ru.sdevteam.starlit.world.World;
 
 /**
  * Created by user on 23.06.2016.
@@ -31,7 +38,7 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback, G
 	// TODO: private StarDisplay lastStarDisplay;
 	// mb? private GalaxyDisplay galaxyDisplay;
 
-	private Label testLabel;
+	private CompoundComponent componentsRoot;
 
 	private World currentWorld;
 
@@ -47,9 +54,6 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback, G
 		gd.setOnDoubleTapListener(this);
 
 		currentWorld = new World(1);
-
-		testLabel = new Label(20, 20, 200, 20, "This text @1;appears@u; formatted@d;!");
-		testLabel.setFormatted(true);
 	}
 
 	private void initSizes()
@@ -68,6 +72,9 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback, G
 		buffer = Bitmap.createBitmap(realWidth, realHeight, Bitmap.Config.ARGB_8888);
 		bufferCanvas = new Canvas(buffer);
 		bufferCanvas.drawColor(Color.RED);
+
+		componentsRoot = new CompoundComponent(0, 0, realWidth, realHeight);
+		componentsRoot.appendChild(new DynamicFoneComponent(realWidth-panelWidth-2, 2, panelWidth, panelWidth));
 	}
 
 	private void initPaints()
@@ -79,22 +86,28 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback, G
 	private void update()
 	{
 		if(currentDisplay!=null)
+		{
 			currentDisplay.update();
+			componentsRoot.update();
+		}
 	}
 
 	private void paint()
 	{
+		if(currentDisplay == null) return;
+
 		currentDisplay.drawContent(bufferCanvas);
 
 		p.setStyle(Paint.Style.FILL);
-		int padding = 2;
-		for (int i = 0; i < 3; i++)
+		//int padding = 2;
+		/*for (int i = 0; i < 3; i++)
 		{
 			bufferCanvas.drawRect(realWidth - panelWidth + padding, i * panelWidth + padding,
 					realWidth - padding, (i + 1) * panelWidth - padding, p);
-		}
+		}*/
 
-		testLabel.paint(bufferCanvas);
+		// all components lay above the display
+		componentsRoot.paint(bufferCanvas);
 
 		Canvas screenCanvas = null;
 		try
@@ -112,27 +125,6 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback, G
 		}
 	}
 
-	/*@Override
-	protected void onDraw(Canvas bufferCanvas)
-	{
-		//super.onDraw(bufferCanvas);
-
-		synchronized (buffer)
-		{
-			bufferCanvas.drawBitmap(buffer, 0, 0, null);
-		}
-
-		/*currentDisplay.drawContent(bufferCanvas);
-
-		p.setStyle(Paint.Style.FILL);
-		int padding = 2;
-		for(int i=0; i<3; i++)
-		{
-			bufferCanvas.drawRect(realWidth-panelWidth+padding, i*panelWidth+padding,
-					realWidth-padding, (i+1)*panelWidth-padding, p);
-		}* /
-	}*/
-
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh)
 	{
@@ -140,20 +132,9 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback, G
 
 		initSizes();
 		initPaints();
-
-		/*if(!paintTimer.isRunning())
-		{
-			paintTimer.start();
-			updateTimer.start();
-			fpsTimer.start();
-		}*/
 	}
 
 
-	/*private float lmx = -1, lmy = -1;
-	private boolean dragging = false;
-	private long lastTapOccuredAt = 0;
-	private static final long DOUBLE_TAP_DELAY = 500;*/
 	@Override
 	public boolean onTouchEvent(MotionEvent event)
 	{
@@ -263,21 +244,27 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback, G
 	@Override
 	public boolean onSingleTapUp(MotionEvent ev)
 	{
-		currentDisplay.selectObjectUnder(ev.getX(), ev.getY());
+		if(!componentsRoot.invokeOnTap((int)ev.getX(), (int)ev.getY()))
+		{
+			currentDisplay.selectObjectUnder(ev.getX(), ev.getY());
+		}
 		return true;
 	}
 
 	@Override
 	public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float dx, float dy)
 	{
-		currentDisplay.moveViewportBy(dx, dy);
+		if(!componentsRoot.invokeOnScroll((int)dx, (int)dy))
+		{
+			currentDisplay.moveViewportBy(dx, dy);
+		}
 		return true;
 	}
 
 	@Override
 	public void onLongPress(MotionEvent motionEvent)
 	{
-
+		componentsRoot.invokeOnLongTap((int)motionEvent.getX(), (int)motionEvent.getY());
 	}
 
 	@Override
@@ -296,12 +283,15 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback, G
 	public boolean onDoubleTap(MotionEvent ev)
 	{
 		// TODO: add transitions
-		AbstractDisplay d = currentDisplay.displayObjectUnder(ev.getX(), ev.getY());
-		if(d != null)
+		if(!componentsRoot.invokeOnDoubleTap((int)ev.getX(), (int)ev.getY()))
 		{
-			currentDisplay = d;
+			AbstractDisplay d = currentDisplay.displayObjectUnder(ev.getX(), ev.getY());
+			if (d != null)
+			{
+				currentDisplay = d;
+			}
+			else currentDisplay = sectorsDisplay;
 		}
-		else currentDisplay = sectorsDisplay;
 		return true;
 	}
 

@@ -46,10 +46,24 @@ public abstract class UIComponent
 		return fonePaint;
 	}
 
+	private Paint borderPaint;
+	protected float borderWidth = 1;
+	protected Paint getBorderPaint()
+	{
+		if (borderPaint == null)
+		{
+			borderPaint = new Paint();
+		}
+		borderPaint.setColor(textColor);
+		borderPaint.setStyle(Paint.Style.STROKE);
+		borderPaint.setStrokeWidth(borderWidth);
+		return borderPaint;
+	}
+
 	public UIComponent()
 	{
 		textColor = Color.WHITE;
-		bgColor = Color.argb(64, 255, 255, 255);
+		bgColor = Color.argb(32, 255, 255, 255);
 		textSize = 20;
 		text = "";
 
@@ -99,6 +113,8 @@ public abstract class UIComponent
 		c.drawText(text, x+width/2, y+height/2 - textHalfHeight, getTextPaint());
 	}
 
+	public void update() {}
+
 
 	//
 	// EVENTS
@@ -108,40 +124,48 @@ public abstract class UIComponent
 	public void subscribe(EventListener l) { listeners.add(l); }
 	public void unsubscribe(EventListener l) { listeners.remove(l); }
 
-	public void invokeOnTap(int tapX, int tapY)
+	public boolean invokeOnTap(int tapX, int tapY)
 	{
+		boolean consumed = false;
 		for (EventListener l : listeners)
 		{
 			if(l != null)
-				if(l.onTap(tapX, tapY)) return;
+				if(l.onTap(tapX, tapY)) consumed = true;
 		}
+		return consumed;
 	}
 
-	public void invokeOnDoubleTap(int tapX, int tapY)
+	public boolean invokeOnDoubleTap(int tapX, int tapY)
 	{
+		boolean consumed = false;
 		for (EventListener l : listeners)
 		{
 			if(l != null)
-				if(l.onDoubleTap(tapX, tapY)) return;
+				if(l.onDoubleTap(tapX, tapY)) consumed = true;
 		}
+		return consumed;
 	}
 
-	public void invokeOnLongTap(int tapX, int tapY)
+	public boolean invokeOnLongTap(int tapX, int tapY)
 	{
+		boolean consumed = false;
 		for (EventListener l : listeners)
 		{
 			if(l != null)
-				if(l.onLongTap(tapX, tapY)) return;
+				if(l.onLongTap(tapX, tapY)) consumed = true;
 		}
+		return consumed;
 	}
 
-	public void invokeOnScroll(int dx, int dy)
+	public boolean invokeOnScroll(int dx, int dy)
 	{
+		boolean consumed = false;
 		for (EventListener l : listeners)
 		{
 			if(l != null)
-				if(l.onScroll(dx, dy)) return;
+				if(l.onScroll(dx, dy)) consumed = true;
 		}
+		return consumed;
 	}
 
 
