@@ -4,7 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by bob on 30.07.17.
+ * Class represents University building that scores science points
  */
 public class University extends Building
 {

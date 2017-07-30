@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import ru.sdevteam.starlit.craft.res.ResAmount;
 
 /**
- * Created by bob on 30.07.17.
+ * Class represents Shipyard building
  */
 public class Shipyard extends Building
 {
