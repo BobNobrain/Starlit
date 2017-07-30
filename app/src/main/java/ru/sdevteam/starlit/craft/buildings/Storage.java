@@ -9,7 +9,7 @@ import ru.sdevteam.starlit.craft.res.StorageLimit;
 import java.util.EnumSet;
 
 /**
- * Created by user on 11.07.2016.
+ * Class represents Storage building that can store resources
  */
 public class Storage extends Building
 {

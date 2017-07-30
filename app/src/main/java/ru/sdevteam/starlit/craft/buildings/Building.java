@@ -81,6 +81,7 @@ public class Building
 
 	public enum Type
 	{
+		// TODO: ???
 		// every building can be a storage!
 		// some are public storages, and some are not
 		PLANT, STATE, SCIENCE, SHIPYARD, STORAGE, WARFARE, OTHER
