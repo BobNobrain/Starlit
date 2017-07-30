@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity
 
 		try
 		{
-			String buildingsJsonStr = LoadFileContent("buildings");
+			String buildingsJsonStr = loadFileContent("buildings");
 			JSONArray buildings = new JSONArray(buildingsJsonStr);
 			BuildingsRegistry.registerFromJSON(buildings);
 		}
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
 		}
 	}
 
-	public String LoadFileContent(String fileName) throws IOException
+	public String loadFileContent(String fileName) throws IOException
 	{
 		//Create a InputStream to read the file into
 		Resources resources = getResources();
