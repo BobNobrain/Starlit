@@ -45,6 +45,14 @@ public abstract class UIComponent
 		fonePaint.setColor(bgColor);
 		return fonePaint;
 	}
+	public void setBackgroundColor(int a, int r, int g, int b)
+	{
+		bgColor = Color.argb(a, r, g, b);
+	}
+	public void setTextColor(int a, int r, int g, int b)
+	{
+		textColor = Color.argb(a, r, g, b);
+	}
 
 	private Paint borderPaint;
 	protected float borderWidth = 1;

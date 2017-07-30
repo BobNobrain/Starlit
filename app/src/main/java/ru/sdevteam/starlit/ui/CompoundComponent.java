@@ -7,11 +7,15 @@ import ru.sdevteam.starlit.utils.MathUtils;
 import java.util.Vector;
 
 /**
- * Created by user on 15.08.2016.
+ * Class represents a container component. It holds many UI components inside and controls them.
  */
 public class CompoundComponent extends UIComponent
 {
 	protected Vector<UIComponent> children;
+	public Vector<UIComponent> getChildren()
+	{
+		return children;
+	}
 
 	public CompoundComponent(int x, int y, int width, int height)
 	{
