@@ -1,0 +1,46 @@
+[
+  {
+    "name": "Government",
+    "price": [5, 0, 0, 0, 0, 0, 0],
+    "destruct_price": [4, 0, 0, 0, 0, 0, 0],
+    "population": 1,
+    "time": 1000,
+    "place": ["GROUND"],
+    "tech_level": 0,
+    "class": "starlit.craft.buildings.Storage",
+    "storage_limit": [10, 7, 10, 15]
+  },
+  {
+    "name": "Storage",
+    "price": [8, 0, 0, 0, 0, 0, 0],
+    "destruct_price": [6, 0, 0, 0, 0, 0, 0],
+    "population": 0,
+    "time": 1500,
+    "place": ["GROUND", "PLANET_ORBIT", "STAR_ORBIT"],
+    "tech_level": 0,
+    "class": "starlit.craft.buildings.Storage",
+    "storage_limit": [15, 25, 20, 40]
+  },
+  {
+    "name": "Warehouse",
+    "price": [15, 3, 0, 0, 0, 0, 5],
+    "destruct_price": [12, 2, 0, 0, 0, 0, 0],
+    "population": 10,
+    "time": 5000,
+    "place": ["GROUND", "PLANET_ORBIT", "STAR_ORBIT"],
+    "tech_level": 0,
+    "class": "starlit.craft.buildings.Storage",
+    "storage_limit": [50, 40, 50, 100]
+  },
+  {
+    "name": "Massive Warehouse",
+    "price": [35, 10, 0, 0, 0, 0, 10],
+    "destruct_price": [30, 6, 0, 0, 0, 0, 0],
+    "population": 10,
+    "time": 5000,
+    "place": ["GROUND", "PLANET_ORBIT", "STAR_ORBIT"],
+    "tech_level": 1,
+    "class": "starlit.craft.buildings.Storage",
+    "storage_limit": [125, 65, 150, 200]
+  }
+]

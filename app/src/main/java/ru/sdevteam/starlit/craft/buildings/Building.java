@@ -1,13 +1,14 @@
 package ru.sdevteam.starlit.craft.buildings;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import ru.sdevteam.starlit.craft.res.ResAmount;
-import ru.sdevteam.starlit.craft.res.ResType;
-import ru.sdevteam.starlit.craft.res.StorageLimit;
 
 import java.util.EnumSet;
 
 /**
- * Created by user on 11.07.2016.
+ * Class represents a basic building with all its parameters
  */
 public class Building
 {
@@ -41,9 +42,6 @@ public class Building
 		this.price = price;
 		destructionProfit = destructionCost;
 		this.placeableAt = placeableAt;
-
-		stored = null;// new ResAmount();
-		limit = null;// new StorageLimit();
 	}
 
 	public Building(Building sample)
@@ -54,90 +52,30 @@ public class Building
 		this.price = sample.price;
 		destructionProfit = sample.destructionProfit;
 		this.placeableAt = sample.placeableAt;
+	}
 
-		stored = sample.stored;
-		limit = sample.limit;
+	public Building(JSONObject params) throws JSONException
+	{
+		name = params.getString("name");
+		timeToBuild = params.getInt("time");
+		populationNeeded = params.getInt("population");
+		price = ResAmount.fromJSON(params.getJSONArray("price"));
+		destructionProfit = ResAmount.fromJSON(params.getJSONArray("destruct_price"));
+
+		JSONArray places = params.getJSONArray("place");
+		EnumSet<BuildingPlace> ps = EnumSet.noneOf(BuildingPlace.class);
+		for (int i = 0; i < places.length(); i++)
+		{
+			String name = places.getString(i);
+			ps.add(BuildingPlace.valueOf(name));
+		}
+		placeableAt = ps;
 	}
 
 
 	public void update(long worldTime, int fullSecondsElapsed)
 	{
 
-	}
-
-	//
-	// storage api
-	//
-	protected StorageLimit limit;
-	protected ResAmount stored;
-
-	public boolean isPublicStorage() { return false; }
-
-	public StorageLimit getStorageLimit()
-	{
-		return limit;
-	}
-
-	public int getStoredAmount(ResType rt)
-	{
-		return stored.getAmountOf(rt);
-	}
-
-	public boolean hasStoredAmount(ResType rt, int howMuch)
-	{
-		return stored.getAmountOf(rt) >= howMuch;
-	}
-
-	public boolean addStoredAmount(ResType rt, int addition)
-	{
-		int newAmount = stored.getAmountOf(rt.resClass) + addition;
-		if(newAmount <= limit.getLimitFor(rt.resClass))
-		{
-			stored.setAmountOf(rt, stored.getAmountOf(rt) + addition);
-			return true;
-		}
-		return false;
-	}
-
-	public boolean addStoredAmount(ResAmount res)
-	{
-		if(!limit.canStore(stored, res)) return false;
-		stored.increaseBy(res);
-		return true;
-	}
-
-	public boolean withdrawResources(ResAmount res)
-	{
-		return stored.decreaseBy(res);
-	}
-
-	public ResAmount withdrawAsMuchAsPossible(ResAmount maxToWithdraw)
-	{
-		if(stored.decreaseBy(maxToWithdraw))
-		{
-			return maxToWithdraw;
-		}
-
-		ResAmount result = new ResAmount();
-
-		ResType[] types = ResType.values();
-		for (ResType type : types)
-		{
-			int has = stored.getAmountOf(type);
-			int needed = maxToWithdraw.getAmountOf(type);
-			if(has >= needed)
-			{
-				stored.setAmountOf(type, has - needed);
-				result.setAmountOf(type, needed);
-			}
-			else
-			{
-				stored.setAmountOf(type, 0);
-				result.setAmountOf(type, has);
-			}
-		}
-
-		return result;
 	}
 
 

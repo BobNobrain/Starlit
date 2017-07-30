@@ -1,5 +1,8 @@
 package ru.sdevteam.starlit.craft.res;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 /**
  * Created by user on 11.07.2016.
  */
@@ -74,5 +77,15 @@ public class ResAmount
 			if(amounts[i] < res.amounts[i]) return false;
 		}
 		return true;
+	}
+
+	public static ResAmount fromJSON(JSONArray values) throws JSONException
+	{
+		ResAmount result = new ResAmount();
+		for (int i = 0; i < result.amounts.length; i++)
+		{
+			result.amounts[i] = values.getInt(i);
+		}
+		return result;
 	}
 }
