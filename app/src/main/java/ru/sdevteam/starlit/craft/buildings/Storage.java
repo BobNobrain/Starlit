@@ -1,5 +1,7 @@
 package ru.sdevteam.starlit.craft.buildings;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import ru.sdevteam.starlit.craft.res.ResAmount;
 import ru.sdevteam.starlit.craft.res.ResType;
 import ru.sdevteam.starlit.craft.res.StorageLimit;
@@ -11,6 +13,8 @@ import java.util.EnumSet;
  */
 public class Storage extends Building
 {
+	protected StorageLimit limit;
+	protected ResAmount stored;
 
 	protected Storage(String name, ResAmount price, ResAmount destructionCost,
 					  int poplNeeded, int timeNeeded, EnumSet<BuildingPlace> placeableAt,
@@ -26,6 +30,10 @@ public class Storage extends Building
 		super(sample);
 	}
 
-	@Override
-	public final boolean isPublicStorage() { return true; }
+	public Storage(JSONObject params) throws JSONException
+	{
+		super(params);
+		this.limit = StorageLimit.fromJSON(params.getJSONArray("storage_limit"));
+		this.stored = new ResAmount();
+	}
 }

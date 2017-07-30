@@ -1,5 +1,9 @@
 package ru.sdevteam.starlit.craft.res;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import ru.sdevteam.starlit.craft.buildings.Storage;
+
 /**
  * Created by user on 11.07.2016.
  */
@@ -78,5 +82,15 @@ public class StorageLimit
 			if(amounts[i] > limits[i]) return false;
 		}
 		return true;
+	}
+
+	public static StorageLimit fromJSON(JSONArray arr) throws JSONException
+	{
+		StorageLimit result = new StorageLimit();
+		for (int i = 0; i < result.limits.length; i++)
+		{
+			result.limits[i] = arr.getInt(i);
+		}
+		return result;
 	}
 }

@@ -42,5 +42,41 @@
     "tech_level": 1,
     "class": "starlit.craft.buildings.Storage",
     "storage_limit": [125, 65, 150, 200]
+  },
+  {
+    "name": "Metal Plant",
+    "price": [7, 1, 0, 0, 0, 0, 3],
+    "destruct_price": [5, 0, 0, 0, 0, 0, 0],
+    "population": 5,
+    "time": 2000,
+    "place": ["GROUND"],
+    "tech_level": 0,
+    "class": "starlit.craft.buildings.Plant",
+    "plant_speed": [1, 0, 0, 0, 0, 0, 0],
+    "plant_consumption": [0, 0, 0, 0, 0, 0, 1]
+  },
+  {
+    "name": "Shipyard",
+    "price": [15, 7, 0, 0, 0, 0, 5],
+    "destruct_price": [10, 5, 0, 0, 0, 0, 0],
+    "population": 7,
+    "time": 3000,
+    "place": ["PLANET_ORBIT"],
+    "tech_level": 1,
+    "class": "starlit.craft.buildings.Shipyard",
+    "ship_price": [1, 0, 0, 0, 0, 0, 0],
+    "ships_amount": 3,
+    "ship_type": "CARGO"
+  },
+  {
+    "name": "University",
+    "price": [10, 10, 0, 0, 0, 0, 8],
+    "destruct_price": [7, 5, 0, 0, 0, 0, 0],
+    "population": 20,
+    "time": 5000,
+    "place": ["GROUND"],
+    "tech_level": 0,
+    "class": "starlit.craft.buildings.University",
+    "sp_speed": 0.1
   }
 ]

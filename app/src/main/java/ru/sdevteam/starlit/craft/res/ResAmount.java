@@ -8,6 +8,8 @@ import org.json.JSONException;
  */
 public class ResAmount
 {
+	public static final ResAmount ENERGY_UNIT = new ResAmount(0, 0, 0, 0, 0, 0, 1);
+
 	private int[] amounts;
 
 	public ResAmount(int allValue)
@@ -68,6 +70,14 @@ public class ResAmount
 			amounts[i] += res.amounts[i];
 		}
 		return true;
+	}
+
+	public ResAmount multiply(int m)
+	{
+		ResAmount result = new ResAmount();
+		for (int i = 0; i < amounts.length; i++)
+			result.amounts[i] = amounts[i] * m;
+		return result;
 	}
 
 	public boolean isGreaterOrEqualThan(ResAmount res)
