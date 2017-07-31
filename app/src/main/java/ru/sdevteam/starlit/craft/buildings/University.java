@@ -15,4 +15,10 @@ public class University extends Building
 		super(params);
 		spSpeed = (float) params.getDouble("sp_speed");
 	}
+
+	@Override
+	public Type getType()
+	{
+		return Type.SCIENCE;
+	}
 }

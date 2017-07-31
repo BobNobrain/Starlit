@@ -18,4 +18,10 @@ public class Shipyard extends Building
 		shipPrice = ResAmount.fromJSON(params.getJSONArray("ship_price"));
 		shipCount = params.getInt("ships_amount");
 	}
+
+	@Override
+	public Type getType()
+	{
+		return Type.SHIPYARD;
+	}
 }

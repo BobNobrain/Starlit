@@ -7,8 +7,8 @@ public class BuildInterface extends CompoundComponent
 {
 	private int panelW;
 	private Checkbox mainButton;
-	private UIComponent buildButton;
-	private CompoundComponent toggleableContainer;
+	private UIComponent buildGButton, buildOButton;
+	private GridContainer toggleableContainer;
 	private boolean isActive;
 
 	public BuildInterface(int x, int y, int width, int height, int panelWidth)
@@ -30,13 +30,20 @@ public class BuildInterface extends CompoundComponent
 			}
 		});
 
-		buildButton = new DynamicFoneComponent(
-			x + 2, y + height - panelW / 2 - 2,
-			panelW * 2, panelW / 2,
-			"Build"
+		int h = panelW / 2;
+		buildGButton = new Button(
+			x + 2, y + height - h - 2,
+			panelW * 3, h,
+			"Build at ground"
+		);
+		buildOButton = new Button(
+			x + 4 + panelW * 3, y + height - h - 2,
+			panelW * 3, h,
+			"Build at orbit"
 		);
 
-		toggleableContainer = new CompoundComponent(x, y, width, height);
+		toggleableContainer = new GridContainer(x, y, width, height);
+		toggleableContainer.setGrid(10, 5, 5, 5);
 
 		CheckboxGroup chG = new CheckboxGroup(toggleableContainer);
 
@@ -50,14 +57,15 @@ public class BuildInterface extends CompoundComponent
 		{
 			toggleableContainer.appendChild(c);
 		}
-		toggleableContainer.appendChild(buildButton);
+		toggleableContainer.appendChild(buildGButton);
+		toggleableContainer.appendChild(buildOButton);
 		toggleableContainer.appendChild(chG);
 
 		// now it's time for chG to search for checkboxes inside container and take 'em under control
 		chG.inspectCheckboxes();
 
 		appendChild(mainButton);
-		appendChild(toggleableContainer);
+//		appendChild(toggleableContainer);
 	}
 
 	private void toggleInterface(boolean state)

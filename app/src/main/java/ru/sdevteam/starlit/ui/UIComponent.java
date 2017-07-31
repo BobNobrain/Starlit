@@ -124,6 +124,12 @@ public abstract class UIComponent
 	public void update() {}
 
 
+	public boolean is(Class T)
+	{
+		return T.isAssignableFrom(getClass());
+	}
+
+
 	//
 	// EVENTS
 	//

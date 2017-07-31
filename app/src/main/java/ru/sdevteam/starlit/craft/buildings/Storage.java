@@ -36,4 +36,10 @@ public class Storage extends Building
 		this.limit = StorageLimit.fromJSON(params.getJSONArray("storage_limit"));
 		this.stored = new ResAmount();
 	}
+
+	@Override
+	public Type getType()
+	{
+		return Type.STORAGE;
+	}
 }

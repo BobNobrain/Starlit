@@ -84,6 +84,14 @@ public class StorageLimit
 		return true;
 	}
 
+	public void increaseBy(StorageLimit another)
+	{
+		for (int i = 0; i < limits.length; i++)
+		{
+			limits[i] += another.limits[i];
+		}
+	}
+
 	public static StorageLimit fromJSON(JSONArray arr) throws JSONException
 	{
 		StorageLimit result = new StorageLimit();

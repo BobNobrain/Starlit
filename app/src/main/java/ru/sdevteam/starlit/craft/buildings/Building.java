@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import ru.sdevteam.starlit.craft.res.ResAmount;
+import ru.sdevteam.starlit.world.Celestial;
 
 import java.util.EnumSet;
 
@@ -79,11 +80,15 @@ public class Building
 	}
 
 
+	public boolean canBePlacedAt(Celestial c)
+	{
+		return true;
+	}
+
+	public Type getType() { return Type.OTHER; }
+
 	public enum Type
 	{
-		// TODO: ???
-		// every building can be a storage!
-		// some are public storages, and some are not
-		PLANT, STATE, SCIENCE, SHIPYARD, STORAGE, WARFARE, OTHER
+		STATE, STORAGE, PLANT, SCIENCE, SHIPYARD, WARFARE, OTHER
 	}
 }

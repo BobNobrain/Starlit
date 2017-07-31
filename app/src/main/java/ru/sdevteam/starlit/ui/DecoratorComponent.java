@@ -26,6 +26,32 @@ public class DecoratorComponent extends UIComponent
 	}
 
 	@Override
+	public boolean is(Class T)
+	{
+		if (T.isAssignableFrom(getClass()))
+		{
+			return true;
+		}
+		if (decorated instanceof DecoratorComponent)
+		{
+			return ((DecoratorComponent) decorated).is(T);
+		}
+		return false;
+	}
+	public UIComponent findOfType(Class T)
+	{
+		if (T.isAssignableFrom(getClass()))
+		{
+			return this;
+		}
+		if (decorated instanceof DecoratorComponent)
+		{
+			return ((DecoratorComponent) decorated).findOfType(T);
+		}
+		return null;
+	}
+
+	@Override
 	protected void paintFone(Canvas c)
 	{
 		decorated.paintFone(c);

@@ -31,7 +31,7 @@ public class CompoundComponent extends UIComponent
 	public boolean invokeOnTap(int tapX, int tapY)
 	{
 		super.invokeOnTap(tapX, tapY);
-		for (int i = children.size()-1; i > 0; i--)
+		for (int i = children.size()-1; i >= 0; i--)
 		{
 			UIComponent child = children.get(i);
 			if(MathUtils.pointInRect(tapX, tapY, child.x, child.y, child.width, child.height))
@@ -46,7 +46,7 @@ public class CompoundComponent extends UIComponent
 	public boolean invokeOnDoubleTap(int tapX, int tapY)
 	{
 		super.invokeOnDoubleTap(tapX, tapY);
-		for (int i = children.size()-1; i > 0; i--)
+		for (int i = children.size()-1; i >= 0; i--)
 		{
 			UIComponent child = children.get(i);
 			if(MathUtils.pointInRect(tapX, tapY, child.x, child.y, child.width, child.height))
@@ -61,7 +61,7 @@ public class CompoundComponent extends UIComponent
 	public boolean invokeOnLongTap(int tapX, int tapY)
 	{
 		super.invokeOnLongTap(tapX, tapY);
-		for (int i = children.size()-1; i > 0; i--)
+		for (int i = children.size()-1; i >= 0; i--)
 		{
 			UIComponent child = children.get(i);
 			if(MathUtils.pointInRect(tapX, tapY, child.x, child.y, child.width, child.height))
@@ -76,7 +76,7 @@ public class CompoundComponent extends UIComponent
 	public boolean invokeOnScroll(int dx, int dy)
 	{
 		super.invokeOnScroll(dx, dy);
-		for (int i = children.size()-1; i > 0; i--)
+		for (int i = children.size()-1; i >= 0; i--)
 		{
 			UIComponent child = children.get(i);
 			if(MathUtils.pointInRect(dx, dy, child.x, child.y, child.width, child.height))

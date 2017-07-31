@@ -2,6 +2,7 @@ package ru.sdevteam.starlit.ui;
 
 import android.graphics.Canvas;
 
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -16,6 +17,8 @@ public class CheckboxGroup extends InvisibleComponent implements Checkbox.StateC
 
 	protected CompoundComponent target;
 
+	protected List<StateChangedListener> listeners;
+
 	public CheckboxGroup(CompoundComponent of)
 	{
 		target = of;
@@ -29,6 +32,7 @@ public class CheckboxGroup extends InvisibleComponent implements Checkbox.StateC
 		current = value;
 		if (value != null)
 			current.subscribeStateChange(this);
+		invokeStateChanged();
 	}
 
 	@Override
@@ -47,9 +51,9 @@ public class CheckboxGroup extends InvisibleComponent implements Checkbox.StateC
 		boolean metActive = false;
 		for (UIComponent c: target.getChildren())
 		{
-			if (c instanceof Checkbox)
+			if (c.is(Checkbox.class))
 			{
-				final Checkbox cb = (Checkbox) c;
+				final Checkbox cb = (Checkbox) ((DecoratorComponent) c).findOfType(Checkbox.class);
 
 				// but if there already were one, skip it - it's ready
 				if (checkboxes.contains(cb)) continue;
@@ -72,15 +76,38 @@ public class CheckboxGroup extends InvisibleComponent implements Checkbox.StateC
 						if (newState)
 						{
 							// new is switched on => old should be switched off
-							if (current != null && current != cb)
-							{
-								current.setState(false);
-							}
+							Checkbox oldCurrent = current;
 							setCurrent(cb);
+							if (oldCurrent != null && oldCurrent != cb)
+							{
+								oldCurrent.setState(false);
+							}
 						}
 					}
 				});
 			}
 		}
+	}
+
+	public void subscribeStateChanged(StateChangedListener l)
+	{
+		listeners.add(l);
+	}
+	public void unsubscribeStateChanged(StateChangedListener l)
+	{
+		listeners.remove(l);
+	}
+
+	protected void invokeStateChanged()
+	{
+		for (StateChangedListener l: listeners)
+		{
+			l.onStateChanged(current);
+		}
+	}
+
+	public interface StateChangedListener
+	{
+		void onStateChanged(Checkbox newChecked);
 	}
 }

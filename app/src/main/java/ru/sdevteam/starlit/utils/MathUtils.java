@@ -21,7 +21,7 @@ public class MathUtils
 		if(px<rx) return false;
 		if(py<ry) return false;
 		if(px>rx+rw) return false;
-		if(px>ry+rh) return false;
+		if(py>ry+rh) return false;
 		return true;
 	}
 	public static boolean pointInRect(int px, int py, int rx, int ry, int rw, int rh)
@@ -29,7 +29,16 @@ public class MathUtils
 		if(px<rx) return false;
 		if(py<ry) return false;
 		if(px>rx+rw) return false;
-		if(px>ry+rh) return false;
+		if(py>ry+rh) return false;
 		return true;
+	}
+
+	public static int towards(int start, int end, int progress, int progressMax)
+	{
+		return start + (end - start) * progress / progressMax;
+	}
+	public static float towards(float start, float end, float progress)
+	{
+		return start + (end - start) * progress;
 	}
 }

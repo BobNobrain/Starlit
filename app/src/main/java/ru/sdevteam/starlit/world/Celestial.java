@@ -1,5 +1,6 @@
 package ru.sdevteam.starlit.world;
 
+import ru.sdevteam.starlit.craft.buildings.BuildingSystem;
 import ru.sdevteam.starlit.craft.res.ResAmount;
 import ru.sdevteam.starlit.craft.res.ResAvailability;
 import ru.sdevteam.starlit.craft.res.ResClass;
@@ -54,6 +55,12 @@ public abstract class Celestial
 			}
 		}
 		return false;
+	}
+
+	protected BuildingSystem buildings;
+	public BuildingSystem getBuildingSystem()
+	{
+		return buildings;
 	}
 
 

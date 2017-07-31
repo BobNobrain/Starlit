@@ -39,4 +39,10 @@ public class Plant extends Building
 			}
 		}
 	}
+
+	@Override
+	public Type getType()
+	{
+		return Type.PLANT;
+	}
 }

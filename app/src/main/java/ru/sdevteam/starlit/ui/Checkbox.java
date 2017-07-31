@@ -61,6 +61,14 @@ public class Checkbox extends DecoratorComponent
 		);
 	}
 
+	@Override
+	public boolean invokeOnTap(int tapX, int tapY)
+	{
+		super.invokeOnTap(tapX, tapY);
+		setState(!active);
+		return true;
+	}
+
 	protected void toggle(boolean newState)
 	{
 		this.active = newState;
@@ -80,9 +88,9 @@ public class Checkbox extends DecoratorComponent
 
 	protected void invokeOnStateChange(boolean newState)
 	{
-		for (StateChangedListener l: stateListeners)
+		for (int i = 0; i < stateListeners.size(); i++)
 		{
-			l.onStateChanged(newState);
+			stateListeners.get(i).onStateChanged(newState);
 		}
 	}
 

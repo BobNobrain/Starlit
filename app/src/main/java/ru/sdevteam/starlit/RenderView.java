@@ -10,6 +10,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import ru.sdevteam.starlit.ui.BuildInterface;
 import ru.sdevteam.starlit.ui.CompoundComponent;
 import ru.sdevteam.starlit.ui.DynamicFoneComponent;
 import ru.sdevteam.starlit.world.World;
@@ -17,7 +18,10 @@ import ru.sdevteam.starlit.world.World;
 /**
  * Created by user on 23.06.2016.
  */
-public class RenderView extends SurfaceView implements SurfaceHolder.Callback, GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener
+public class RenderView extends SurfaceView implements
+											SurfaceHolder.Callback,
+											GestureDetector.OnGestureListener,
+											GestureDetector.OnDoubleTapListener
 {
 	public static final float MIN_DRAG_DIST = 5F;
 	private Paint p;
@@ -74,7 +78,8 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback, G
 		bufferCanvas.drawColor(Color.RED);
 
 		componentsRoot = new CompoundComponent(0, 0, realWidth, realHeight);
-		componentsRoot.appendChild(new DynamicFoneComponent(realWidth-panelWidth-2, 2, panelWidth, panelWidth));
+		BuildInterface bi = new BuildInterface(0 ,0, realWidth, realHeight, panelWidth);
+		componentsRoot.appendChild(bi);
 	}
 
 	private void initPaints()
