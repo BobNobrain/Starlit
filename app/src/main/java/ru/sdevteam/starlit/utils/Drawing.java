@@ -54,12 +54,19 @@ public class Drawing
 		// no processing for text alignment
 		rp.setTextAlign(Paint.Align.LEFT);
 
-		StringTokenizer sequence = new StringTokenizer(text, " "+MODIFIER+MODIFIER_STOP, true);
+		StringTokenizer sequence = new StringTokenizer(text, "\n "+MODIFIER+MODIFIER_STOP, true);
 		String token;
 		boolean flagComing = false, flagProcessed = false;
 		while(sequence.hasMoreTokens())
 		{
 			token = sequence.nextToken();
+
+			if (token.equals("\n"))
+			{
+				penX = 0;
+				penY += lineHeight;
+				continue;
+			}
 
 			if(token.equals(MODIFIER_STOP) && flagProcessed) // @A|;
 			{

@@ -84,6 +84,7 @@ public class BuildInterface extends CompoundComponent
 //		}
 		CheckboxGroup bsCBG = new CheckboxGroup(buildings);
 		bsCBG.inspectCheckboxes();
+		bsCBG.subscribeStateChanged(onBuildingSelected);
 
 		buildings.appendChild(bsCBG);
 
@@ -142,4 +143,19 @@ public class BuildInterface extends CompoundComponent
 			removeChild(toggleableContainer);
 		}
 	}
+
+	private void showDescription(Building b)
+	{
+		buildingDescription.setText(String.format("@u;%1$s@d;\n\n%2$s", b.getName(), b.getDescription()));
+	}
+
+	private CheckboxGroup.StateChangedListener onBuildingSelected = new CheckboxGroup.StateChangedListener()
+	{
+		@Override
+		public void onStateChanged(Checkbox newChecked)
+		{
+			BuildingCheckbox b = (BuildingCheckbox) newChecked;
+			showDescription(b.getBuilding());
+		}
+	};
 }
