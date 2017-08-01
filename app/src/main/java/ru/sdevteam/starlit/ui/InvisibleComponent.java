@@ -37,7 +37,7 @@ public class InvisibleComponent extends UIComponent
 	}
 
 	@Override
-	public boolean invokeOnScroll(int dx, int dy)
+	public boolean invokeOnScroll(int sx, int sy, int dx, int dy)
 	{
 		return false;
 	}

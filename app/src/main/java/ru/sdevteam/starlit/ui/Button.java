@@ -4,7 +4,7 @@ import android.graphics.Color;
 import ru.sdevteam.starlit.utils.MathUtils;
 
 /**
- * Created by bob on 30.07.17.
+ * This components acts like a simple button and animates its tap
  */
 public class Button extends DynamicFoneComponent
 {
@@ -38,7 +38,8 @@ public class Button extends DynamicFoneComponent
 	{
 		if (!enabled) return true;
 		ticks = maxTicks;
-		return super.invokeOnTap(tapX, tapY);
+		super.invokeOnTap(tapX, tapY);
+		return true;
 	}
 
 	public void setEnabled(boolean value)

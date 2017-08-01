@@ -35,6 +35,11 @@ public class Storage extends Building
 		super(params);
 		this.limit = StorageLimit.fromJSON(params.getJSONArray("storage_limit"));
 		this.stored = new ResAmount();
+
+		if (description == null)
+		{
+			description = "Can store resources produced at the planet. Maximally stores \n" + limit.toString();
+		}
 	}
 
 	@Override

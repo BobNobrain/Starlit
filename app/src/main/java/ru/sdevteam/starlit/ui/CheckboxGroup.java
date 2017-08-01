@@ -17,12 +17,13 @@ public class CheckboxGroup extends InvisibleComponent implements Checkbox.StateC
 
 	protected CompoundComponent target;
 
-	protected List<StateChangedListener> listeners;
+	protected Vector<StateChangedListener> listeners;
 
 	public CheckboxGroup(CompoundComponent of)
 	{
 		target = of;
 		checkboxes = new Vector<>();
+		listeners = new Vector<>();
 	}
 
 	private void setCurrent(Checkbox value)

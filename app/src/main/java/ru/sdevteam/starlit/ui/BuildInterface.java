@@ -1,5 +1,8 @@
 package ru.sdevteam.starlit.ui;
 
+import ru.sdevteam.starlit.craft.buildings.Building;
+import ru.sdevteam.starlit.craft.buildings.BuildingsRegistry;
+
 /**
  * Class represents interface that allows user build in build systems
  */
@@ -8,7 +11,10 @@ public class BuildInterface extends CompoundComponent
 	private int panelW;
 	private Checkbox mainButton;
 	private UIComponent buildGButton, buildOButton;
-	private GridContainer toggleableContainer;
+	private CompoundComponent toggleableContainer;
+	private ListComponent categories, buildings;
+	private CompoundComponent infoPanel;
+	private Label buildingDescription;
 	private boolean isActive;
 
 	public BuildInterface(int x, int y, int width, int height, int panelWidth)
@@ -20,7 +26,7 @@ public class BuildInterface extends CompoundComponent
 
 	private void initComponents()
 	{
-		mainButton = new Checkbox(new DynamicFoneComponent(width - panelW - 2, 2, panelW, panelW));
+		mainButton = new Checkbox(new DynamicFoneComponent(getX() + getWidth() - panelW - 2, getY() + 2, panelW, panelW));
 		mainButton.subscribeStateChange(new Checkbox.StateChangedListener()
 		{
 			@Override
@@ -31,38 +37,94 @@ public class BuildInterface extends CompoundComponent
 		});
 
 		int h = panelW / 2;
+		int listPadding = 2;
+		int textPadding = 5;
+
+		toggleableContainer = new CompoundComponent(
+			getX(),
+			getY() + panelW,
+			getWidth() - panelW,
+			getHeight() - panelW
+		);
+
+		// categories list
+		categories = new ListComponent(
+			toggleableContainer.getX(),
+			toggleableContainer.getY(),
+			panelW,
+			toggleableContainer.getHeight(),
+			listPadding, true
+		);
+		for (int i = 0; i < 7; i++)
+		{
+			categories.appendChild(new Checkbox(new DynamicFoneComponent(0, 0, panelW, panelW, "" + i)));
+		}
+		CheckboxGroup catsCBG = new CheckboxGroup(categories);
+		catsCBG.inspectCheckboxes();
+
+		categories.appendChild(catsCBG);
+
+		// buildings list
+		buildings = new ListComponent(
+			categories.getX() + categories.getWidth(),
+			toggleableContainer.getY(),
+			panelW * 3,
+			toggleableContainer.getHeight(),
+			listPadding, true
+		);
+		for (Building b: BuildingsRegistry.getForCategory(Building.Type.STORAGE))
+		{
+			buildings.appendChild(new BuildingCheckbox(b, 1, panelW * 2 / 3));
+		}
+//		for (int i = 0; i < 15; i++)
+//		{
+//			buildings.appendChild(
+//				new Checkbox(new DynamicFoneComponent(0, 0, 1, panelW * 2 / 3, "Building " + i))
+//			);
+//		}
+		CheckboxGroup bsCBG = new CheckboxGroup(buildings);
+		bsCBG.inspectCheckboxes();
+
+		buildings.appendChild(bsCBG);
+
+		// info panel
+		infoPanel = new CompoundComponent(
+			buildings.getX() + buildings.getWidth(),
+			toggleableContainer.getY(),
+			toggleableContainer.getWidth() - buildings.getWidth() - categories.getWidth(),
+			toggleableContainer.getHeight()
+		);
 		buildGButton = new Button(
-			x + 2, y + height - h - 2,
-			panelW * 3, h,
+			infoPanel.getX(),
+			infoPanel.getY() + infoPanel.getHeight() - h,
+			infoPanel.getWidth() / 2,
+			h,
 			"Build at ground"
 		);
 		buildOButton = new Button(
-			x + 4 + panelW * 3, y + height - h - 2,
-			panelW * 3, h,
+			buildGButton.getX() + buildGButton.getWidth(),
+			buildGButton.getY(),
+			infoPanel.getWidth() / 2,
+			h,
 			"Build at orbit"
 		);
+		buildingDescription = new Label(
+			infoPanel.getX(),
+			infoPanel.getY(),
+			infoPanel.getWidth(),
+			infoPanel.getHeight() - buildGButton.getHeight(),
+			"Select a building..."
+		);
+		buildingDescription.setPadding(textPadding);
+		buildingDescription.setFormatted(true);
+		infoPanel.appendChild(buildingDescription);
+		infoPanel.appendChild(buildGButton);
+		infoPanel.appendChild(buildOButton);
 
-		toggleableContainer = new GridContainer(x, y, width, height);
-		toggleableContainer.setGrid(10, 5, 5, 5);
-
-		CheckboxGroup chG = new CheckboxGroup(toggleableContainer);
-
-		UIComponent[] fakeButtons = new UIComponent[] {
-			new Checkbox(new DynamicFoneComponent(x, y, panelW, panelW)),
-			new Checkbox(new DynamicFoneComponent(x + panelW, y, panelW, panelW)),
-			new Checkbox(new DynamicFoneComponent(x + 2*panelW, y, panelW, panelW))
-		};
-
-		for (UIComponent c: fakeButtons)
-		{
-			toggleableContainer.appendChild(c);
-		}
-		toggleableContainer.appendChild(buildGButton);
-		toggleableContainer.appendChild(buildOButton);
-		toggleableContainer.appendChild(chG);
-
-		// now it's time for chG to search for checkboxes inside container and take 'em under control
-		chG.inspectCheckboxes();
+		// linking everything into container
+		toggleableContainer.appendChild(categories);
+		toggleableContainer.appendChild(buildings);
+		toggleableContainer.appendChild(infoPanel);
 
 		appendChild(mainButton);
 //		appendChild(toggleableContainer);

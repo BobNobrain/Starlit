@@ -12,12 +12,22 @@ import java.util.Vector;
  */
 public abstract class UIComponent
 {
-	protected int x, y, width, height;
-	protected int textSize;
+	private volatile int x, y, width, height;
+	protected volatile int textSize;
 
-	protected String text;
+	public void locate(int nx, int ny) { x = nx; y = ny; }
+	public void resize(int nw, int nh) { width = nw; height = nh; }
+	public int getX() { return x; }
+	public int getY() { return y; }
+	public int getWidth() { return width; }
+	public int getHeight() { return height; }
 
-	protected int textColor, bgColor;
+
+	private String text;
+	public String getText() { return text; }
+	public void setText(String val) { text = val; }
+
+	protected volatile int textColor, bgColor;
 
 	private static Paint textPaint;
 	protected Paint getTextPaint(float size)
@@ -118,7 +128,8 @@ public abstract class UIComponent
 	{
 		getMetrics();
 		int textHalfHeight = (fm.ascent + fm.descent)/2;
-		c.drawText(text, x+width/2, y+height/2 - textHalfHeight, getTextPaint());
+		int textHalfWidth = (int) getTextPaint().measureText(text) / 2;
+		c.drawText(text, x+width/2 - textHalfWidth, y+height/2 - textHalfHeight, getTextPaint());
 	}
 
 	public void update() {}
@@ -171,7 +182,7 @@ public abstract class UIComponent
 		return consumed;
 	}
 
-	public boolean invokeOnScroll(int dx, int dy)
+	public boolean invokeOnScroll(int sx, int sy, int dx, int dy)
 	{
 		boolean consumed = false;
 		for (EventListener l : listeners)

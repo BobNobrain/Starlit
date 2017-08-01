@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import ru.sdevteam.starlit.utils.Drawing;
 
 /**
- * Created by user on 14.07.2016.
+ * Component demonstrates a text label
  */
 public class Label extends UIComponent
 {
@@ -26,7 +26,7 @@ public class Label extends UIComponent
 
 	public Label()
 	{
-		text = DEFAULT_LABEL_TEXT;
+		setText(DEFAULT_LABEL_TEXT);
 		bgColor = Color.TRANSPARENT;
 	}
 
@@ -68,31 +68,31 @@ public class Label extends UIComponent
 		}
 
 		Paint.FontMetricsInt fm = getMetrics();
-		int penX = x + padding, penY = y + fm.ascent + padding;
+		int penX = getX() + padding, penY = getY() + fm.ascent + padding;
 		switch (textAlign)
 		{
 			case CENTER:
-				penX = x + width / 2;
+				penX = getX() + getWidth() / 2;
 				break;
 
 			case RIGHT:
-				penX = x + width - padding;
+				penX = getX() + getWidth() - padding;
 		}
 
-		c.drawText(text, penX, penY, getTextPaint());
+		c.drawText(getText(), penX, penY, getTextPaint());
 	}
 
 	private void paintTextMultiline(Canvas c)
 	{
 		assert textAlign == Paint.Align.LEFT: "Multiline text with alignment different from LEFT is not implemented :(";
 		c.save();
-		c.translate(x+padding, y+padding);
-		Drawing.paintMultilineText(text, width-2*padding, c, getTextPaint());
+		c.translate(getX()+padding, getY()+padding);
+		Drawing.paintMultilineText(getText(), getWidth()-2*padding, c, getTextPaint());
 		c.restore();
 	}
 
 	private boolean isTextFittingSingleLine()
 	{
-		return width < getTextPaint().measureText(text);
+		return getWidth() < getTextPaint().measureText(getText());
 	}
 }

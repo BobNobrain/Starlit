@@ -14,6 +14,10 @@ import java.util.EnumSet;
 public class Building
 {
 	protected String name;
+	public String getName() { return name; }
+
+	protected String description = null;
+	public String getDescription() { return description; }
 
 	protected BuildingSystem system;
 	void appendToSystem(BuildingSystem sys) { system = sys; }
@@ -71,6 +75,11 @@ public class Building
 			ps.add(BuildingPlace.valueOf(name));
 		}
 		placeableAt = ps;
+
+		if (params.has("desc"))
+		{
+			description = params.getString("desc");
+		}
 	}
 
 

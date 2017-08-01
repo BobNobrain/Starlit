@@ -69,4 +69,15 @@ public class BuildingsRegistry
 		}
 		return null;
 	}
+
+	public static Vector<Building> getForCategory(Building.Type category)
+	{
+		Vector<Building> r = new Vector<>();
+		for (Building b: samples)
+		{
+			if (b.getType() == category)
+				r.add(b);
+		}
+		return r;
+	}
 }

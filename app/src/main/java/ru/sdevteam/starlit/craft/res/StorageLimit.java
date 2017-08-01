@@ -101,4 +101,10 @@ public class StorageLimit
 		}
 		return result;
 	}
+
+	@Override
+	public String toString()
+	{
+		return String.format("O%1$s G%2$s B%3$s E%4$s", limits[0], limits[1], limits[2], limits[3]);
+	}
 }

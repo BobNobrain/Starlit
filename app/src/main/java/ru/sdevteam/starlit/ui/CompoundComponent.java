@@ -2,6 +2,8 @@ package ru.sdevteam.starlit.ui;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.Region;
 import ru.sdevteam.starlit.utils.MathUtils;
 
 import java.util.Vector;
@@ -34,7 +36,7 @@ public class CompoundComponent extends UIComponent
 		for (int i = children.size()-1; i >= 0; i--)
 		{
 			UIComponent child = children.get(i);
-			if(MathUtils.pointInRect(tapX, tapY, child.x, child.y, child.width, child.height))
+			if(MathUtils.pointInRect(tapX, tapY, child.getX(), child.getY(), child.getWidth(), child.getHeight()))
 			{
 				if(child.invokeOnTap(tapX, tapY)) return true;
 			}
@@ -49,7 +51,7 @@ public class CompoundComponent extends UIComponent
 		for (int i = children.size()-1; i >= 0; i--)
 		{
 			UIComponent child = children.get(i);
-			if(MathUtils.pointInRect(tapX, tapY, child.x, child.y, child.width, child.height))
+			if(MathUtils.pointInRect(tapX, tapY, child.getX(), child.getY(), child.getWidth(), child.getHeight()))
 			{
 				if(child.invokeOnDoubleTap(tapX, tapY)) return true;
 			}
@@ -64,7 +66,7 @@ public class CompoundComponent extends UIComponent
 		for (int i = children.size()-1; i >= 0; i--)
 		{
 			UIComponent child = children.get(i);
-			if(MathUtils.pointInRect(tapX, tapY, child.x, child.y, child.width, child.height))
+			if(MathUtils.pointInRect(tapX, tapY, child.getX(), child.getY(), child.getWidth(), child.getHeight()))
 			{
 				if(child.invokeOnLongTap(tapX, tapY)) return true;
 			}
@@ -73,15 +75,15 @@ public class CompoundComponent extends UIComponent
 	}
 
 	@Override
-	public boolean invokeOnScroll(int dx, int dy)
+	public boolean invokeOnScroll(int sx, int sy, int dx, int dy)
 	{
-		super.invokeOnScroll(dx, dy);
+		super.invokeOnScroll(sx, sy, dx, dy);
 		for (int i = children.size()-1; i >= 0; i--)
 		{
 			UIComponent child = children.get(i);
-			if(MathUtils.pointInRect(dx, dy, child.x, child.y, child.width, child.height))
+			if(MathUtils.pointInRect(sx, sy, child.getX(), child.getY(), child.getWidth(), child.getHeight()))
 			{
-				if(child.invokeOnScroll(dx, dy)) return true;
+				if(child.invokeOnScroll(sx, sy, dx, dy)) return true;
 			}
 		}
 		return false;
@@ -95,6 +97,7 @@ public class CompoundComponent extends UIComponent
 		{
 			children.get(i).paint(c);
 		}
+//		c.drawRect(getX(), getY(), getX() + getWidth(), getY() + getHeight(), getBorderPaint());
 	}
 
 	@Override

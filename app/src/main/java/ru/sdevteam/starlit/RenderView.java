@@ -13,6 +13,7 @@ import android.view.SurfaceView;
 import ru.sdevteam.starlit.ui.BuildInterface;
 import ru.sdevteam.starlit.ui.CompoundComponent;
 import ru.sdevteam.starlit.ui.DynamicFoneComponent;
+import ru.sdevteam.starlit.ui.GameUI;
 import ru.sdevteam.starlit.world.World;
 
 /**
@@ -71,15 +72,14 @@ public class RenderView extends SurfaceView implements
 			currentDisplay = sectorsDisplay;
 		}
 
+		// TODO: define this magic value in more magical way
 		panelWidth = realWidth/10;
 
 		buffer = Bitmap.createBitmap(realWidth, realHeight, Bitmap.Config.ARGB_8888);
 		bufferCanvas = new Canvas(buffer);
 		bufferCanvas.drawColor(Color.RED);
 
-		componentsRoot = new CompoundComponent(0, 0, realWidth, realHeight);
-		BuildInterface bi = new BuildInterface(0 ,0, realWidth, realHeight, panelWidth);
-		componentsRoot.appendChild(bi);
+		componentsRoot = new GameUI(realWidth, realHeight, panelWidth);
 	}
 
 	private void initPaints()
@@ -257,9 +257,9 @@ public class RenderView extends SurfaceView implements
 	}
 
 	@Override
-	public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float dx, float dy)
+	public boolean onScroll(MotionEvent ev1, MotionEvent ev2, float dx, float dy)
 	{
-		if(!componentsRoot.invokeOnScroll((int)dx, (int)dy))
+		if(!componentsRoot.invokeOnScroll((int) ev1.getX(), (int) ev1.getY(), (int) dx, (int) dy))
 		{
 			currentDisplay.moveViewportBy(dx, dy);
 		}

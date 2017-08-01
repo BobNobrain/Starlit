@@ -13,16 +13,10 @@ public class DecoratorComponent extends UIComponent
 	{
 		decorated = of;
 
-		x = of.x;
-		y = of.y;
-		width = of.width;
-		height = of.height;
-
 		borderWidth = decorated.borderWidth;
 		bgColor = decorated.bgColor;
 		textColor = decorated.textColor;
 		textSize = decorated.textSize;
-		text = decorated.text;
 	}
 
 	@Override
@@ -80,6 +74,25 @@ public class DecoratorComponent extends UIComponent
 	}
 
 	@Override
+	public int getX() { return decorated.getX(); }
+	@Override
+	public int getY() { return decorated.getY(); }
+	@Override
+	public int getWidth() { return decorated.getWidth(); }
+	@Override
+	public int getHeight() { return decorated.getHeight(); }
+
+	@Override
+	public void locate(int nx, int ny) { decorated.locate(nx, ny); }
+	@Override
+	public void resize(int nw, int nh) { decorated.resize(nw, nh); }
+
+	@Override
+	public String getText() { return decorated.getText(); }
+	@Override
+	public void setText(String val) { decorated.setText(val); }
+
+	@Override
 	public void subscribe(EventListener l)
 	{
 		decorated.subscribe(l);
@@ -106,8 +119,8 @@ public class DecoratorComponent extends UIComponent
 		return decorated.invokeOnLongTap(tapX, tapY);
 	}
 	@Override
-	public boolean invokeOnScroll(int dx, int dy)
+	public boolean invokeOnScroll(int sx, int sy, int dx, int dy)
 	{
-		return decorated.invokeOnScroll(dx, dy);
+		return decorated.invokeOnScroll(sx, sy, dx, dy);
 	}
 }

@@ -9,10 +9,11 @@ public class BuildingCheckbox extends Checkbox
 {
 	protected Building building;
 
-	public BuildingCheckbox(Building b, int x, int y, int w, int h)
+	public BuildingCheckbox(Building b, int w, int h)
 	{
-		super(new DynamicFoneComponent(x, y, w, h));
+		super(new DynamicFoneComponent(0, 0, w, h));
 		building = b;
+		setText(b.getName());
 	}
 
 	public Building getBuilding() { return building; }
