@@ -16,7 +16,7 @@ public class DecoratorComponent extends UIComponent
 		borderWidth = decorated.borderWidth;
 		bgColor = decorated.bgColor;
 		textColor = decorated.textColor;
-		textSize = decorated.textSize;
+		setTextSize(decorated.getTextSize());
 	}
 
 	@Override
@@ -28,15 +28,22 @@ public class DecoratorComponent extends UIComponent
 		}
 		if (decorated instanceof DecoratorComponent)
 		{
-			return ((DecoratorComponent) decorated).is(T);
+			return decorated.is(T);
 		}
-		return false;
+		else
+		{
+			return T.isAssignableFrom(decorated.getClass());
+		}
 	}
 	public UIComponent findOfType(Class T)
 	{
 		if (T.isAssignableFrom(getClass()))
 		{
 			return this;
+		}
+		if (T.isAssignableFrom(decorated.getClass()))
+		{
+			return decorated;
 		}
 		if (decorated instanceof DecoratorComponent)
 		{
@@ -45,15 +52,22 @@ public class DecoratorComponent extends UIComponent
 		return null;
 	}
 
+//	@Override
+//	protected void paintFone(Canvas c)
+//	{
+//		decorated.paintFone(c);
+//	}
+//	@Override
+//	protected void paintText(Canvas c)
+//	{
+//		decorated.paintText(c);
+//	}
+
+
 	@Override
-	protected void paintFone(Canvas c)
+	public void paint(Canvas c)
 	{
-		decorated.paintFone(c);
-	}
-	@Override
-	protected void paintText(Canvas c)
-	{
-		decorated.paintText(c);
+		decorated.paint(c);
 	}
 
 	@Override
