@@ -35,6 +35,7 @@ public class RenderView extends SurfaceView implements
 
 	private int realWidth, realHeight;
 	private int panelWidth;
+	private int textSize;
 
 	private Timer paintTimer, updateTimer, fpsTimer;
 
@@ -43,7 +44,7 @@ public class RenderView extends SurfaceView implements
 	// TODO: private StarDisplay lastStarDisplay;
 	// mb? private GalaxyDisplay galaxyDisplay;
 
-	private CompoundComponent componentsRoot;
+	private GameUI componentsRoot;
 
 	private World currentWorld;
 
@@ -66,20 +67,21 @@ public class RenderView extends SurfaceView implements
 		realWidth = getWidth();
 		realHeight = getHeight();
 
+		// TODO: define this magic values in more magical way
+		panelWidth = realWidth / 10;
+		textSize = realWidth / 40;
+		componentsRoot = new GameUI(realWidth, realHeight, panelWidth, textSize);
+
 		if(currentDisplay == null)
 		{
-			sectorsDisplay = new SectorsDisplay(currentWorld, realWidth, realHeight);
+			sectorsDisplay = new SectorsDisplay(currentWorld, realWidth, realHeight, componentsRoot);
 			currentDisplay = sectorsDisplay;
 		}
-
-		// TODO: define this magic value in more magical way
-		panelWidth = realWidth/10;
 
 		buffer = Bitmap.createBitmap(realWidth, realHeight, Bitmap.Config.ARGB_8888);
 		bufferCanvas = new Canvas(buffer);
 		bufferCanvas.drawColor(Color.RED);
 
-		componentsRoot = new GameUI(realWidth, realHeight, panelWidth);
 	}
 
 	private void initPaints()
@@ -92,7 +94,10 @@ public class RenderView extends SurfaceView implements
 	{
 		if(currentDisplay!=null)
 		{
-			currentDisplay.update();
+			synchronized (currentDisplay)
+			{
+				currentDisplay.update();
+			}
 			componentsRoot.update();
 		}
 	}
@@ -101,15 +106,12 @@ public class RenderView extends SurfaceView implements
 	{
 		if(currentDisplay == null) return;
 
-		currentDisplay.drawContent(bufferCanvas);
+		synchronized (currentDisplay)
+		{
+			currentDisplay.drawContent(bufferCanvas);
+		}
 
 		p.setStyle(Paint.Style.FILL);
-		//int padding = 2;
-		/*for (int i = 0; i < 3; i++)
-		{
-			bufferCanvas.drawRect(realWidth - panelWidth + padding, i * panelWidth + padding,
-					realWidth - padding, (i + 1) * panelWidth - padding, p);
-		}*/
 
 		// all components lay above the display
 		componentsRoot.paint(bufferCanvas);
@@ -251,7 +253,10 @@ public class RenderView extends SurfaceView implements
 	{
 		if(!componentsRoot.invokeOnTap((int)ev.getX(), (int)ev.getY()))
 		{
-			currentDisplay.selectObjectUnder(ev.getX(), ev.getY());
+			synchronized (currentDisplay)
+			{
+				currentDisplay.selectObjectUnder(ev.getX(), ev.getY());
+			}
 		}
 		return true;
 	}
@@ -261,7 +266,10 @@ public class RenderView extends SurfaceView implements
 	{
 		if(!componentsRoot.invokeOnScroll((int) ev1.getX(), (int) ev1.getY(), (int) dx, (int) dy))
 		{
-			currentDisplay.moveViewportBy(dx, dy);
+			synchronized (currentDisplay)
+			{
+				currentDisplay.moveViewportBy(dx, dy);
+			}
 		}
 		return true;
 	}
@@ -290,12 +298,15 @@ public class RenderView extends SurfaceView implements
 		// TODO: add transitions
 		if(!componentsRoot.invokeOnDoubleTap((int)ev.getX(), (int)ev.getY()))
 		{
-			AbstractDisplay d = currentDisplay.displayObjectUnder(ev.getX(), ev.getY());
-			if (d != null)
+			synchronized (currentDisplay)
 			{
-				currentDisplay = d;
+				AbstractDisplay d = currentDisplay.displayObjectUnder(ev.getX(), ev.getY());
+				if (d != null)
+				{
+					currentDisplay = d;
+				}
+				else currentDisplay = sectorsDisplay;
 			}
-			else currentDisplay = sectorsDisplay;
 		}
 		return true;
 	}

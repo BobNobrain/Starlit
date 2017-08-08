@@ -1,6 +1,7 @@
 package ru.sdevteam.starlit;
 
 import android.graphics.*;
+import ru.sdevteam.starlit.ui.GameUI;
 import ru.sdevteam.starlit.utils.MathUtils;
 import ru.sdevteam.starlit.world.Sector;
 import ru.sdevteam.starlit.world.Star;
@@ -24,10 +25,12 @@ public class SectorsDisplay extends AbstractDisplay
 
 	private float sectorScreenWidth;
 
+	private Sector[] visible;
 
-	public SectorsDisplay(World displaying, int displayWidth, int displayHeight)
+
+	public SectorsDisplay(World displaying, int displayWidth, int displayHeight, GameUI gameUI)
 	{
-		super(displayWidth, displayHeight);
+		super(displayWidth, displayHeight, gameUI);
 
 		world = displaying;
 
@@ -46,6 +49,8 @@ public class SectorsDisplay extends AbstractDisplay
 		// (temp) placing viewport into center of sector
 		vpY = vpX = Sector.SECTOR_SIZE/2;
 		// TODO: center it on home star
+
+		moveViewportBy(0, 0);
 	}
 
 	@Override
@@ -53,7 +58,7 @@ public class SectorsDisplay extends AbstractDisplay
 	{
 		c.drawColor(SPACE_COLOR);
 
-		Sector[] visible = world.getVisibleSectors(vpX, vpY);
+//		Sector[] visible = world.getVisibleSectors(vpX, vpY);
 
 		float 	gridX = worldX2Screen(visible[0].getX()*Sector.SECTOR_SIZE + World.ORIGIN_X),
 				gridY = worldY2Screen(visible[0].getY()*Sector.SECTOR_SIZE + World.ORIGIN_Y);
@@ -83,7 +88,7 @@ public class SectorsDisplay extends AbstractDisplay
 		}
 
 		// drawing status text
-		drawStatusText(String.format("Sector %1$s", visible[0].getName()), c);
+//		drawStatusText(String.format("Sector %1$s", visible[0].getName()), c);
 	}
 
 	private void drawSector(Sector s, Canvas c)
@@ -131,7 +136,7 @@ public class SectorsDisplay extends AbstractDisplay
 	@Override
 	public void selectObjectUnder(float screenX, float screenY)
 	{
-		Sector[] visible = world.getVisibleSectors(vpX, vpY);
+//		Sector[] visible = world.getVisibleSectors(vpX, vpY);
 		for(int sec = 0; sec < visible.length; sec++)
 		{
 			Star[] stars = visible[sec].getStarsArray();
@@ -166,10 +171,21 @@ public class SectorsDisplay extends AbstractDisplay
 						worldY2Screen(stars[star].getWorldY()))
 						< selectionRadius * selectionRadius)
 				{
-					return new StarDisplay(stars[star], screenWidth, screenHeight);
+					return new StarDisplay(stars[star], screenWidth, screenHeight, gameUI);
 				}
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void moveViewportBy(float screenX, float screenY)
+	{
+		super.moveViewportBy(screenX, screenY);
+		synchronized (this)
+		{
+			visible = world.getVisibleSectors(vpX, vpY);
+		}
+		setStatusText(String.format("Sector %1$s", visible[0].getName()));
 	}
 }

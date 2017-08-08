@@ -2,6 +2,7 @@ package ru.sdevteam.starlit;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import ru.sdevteam.starlit.ui.GameUI;
 import ru.sdevteam.starlit.utils.MathUtils;
 import ru.sdevteam.starlit.world.Celestial;
 import ru.sdevteam.starlit.world.Planet;
@@ -18,9 +19,9 @@ public class StarDisplay extends AbstractDisplay
 	private Planet selected;
 
 
-	public StarDisplay(Star displaying, int displayWidth, int displayHeight)
+	public StarDisplay(Star displaying, int displayWidth, int displayHeight, GameUI gameUI)
 	{
-		super(displayWidth, displayHeight);
+		super(displayWidth, displayHeight, gameUI);
 
 		defineScaleCoeff(displayWidth, INITIAL_VP_WIDTH);
 
@@ -94,11 +95,12 @@ public class StarDisplay extends AbstractDisplay
 		c.restore();
 
 		// drawing status text
-		drawStatusText(getStatusText(), c);
+//		drawStatusText(getStatusText(), c);
 	}
 
 	private void formStatusText(int planetIndex)
 	{
+		String statusText;
 		if(selected != null)
 		{
 			statusText = String.format("Selected: %1$s (%2$dth of %3$d planets); %4$s",
@@ -108,6 +110,7 @@ public class StarDisplay extends AbstractDisplay
 		{
 			statusText = String.format("Star system of %1$s, %2$d planets", star.getName(), star.getOrbit().length);
 		}
+		setStatusText(statusText);
 	}
 
 	@Override

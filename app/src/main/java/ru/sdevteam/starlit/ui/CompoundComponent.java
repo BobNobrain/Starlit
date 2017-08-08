@@ -29,6 +29,27 @@ public class CompoundComponent extends UIComponent
 	public void appendChild(UIComponent child) { children.add(child); }
 	public void removeChild(UIComponent child) { children.remove(child); }
 
+	public void setTextSizeForAll(int val)
+	{
+		setTextSize(val);
+		for (UIComponent c: children)
+		{
+			c.setTextSize(val);
+			if (c instanceof CompoundComponent)
+			{
+				((CompoundComponent) c).setTextSizeForAll(val);
+			}
+			if (c instanceof DecoratorComponent)
+			{
+				DecoratorComponent d = (DecoratorComponent) c;
+				if (d.is(CompoundComponent.class))
+				{
+					((CompoundComponent) d.findOfType(CompoundComponent.class)).setTextSizeForAll(val);
+				}
+			}
+		}
+	}
+
 	@Override
 	public boolean invokeOnTap(int tapX, int tapY)
 	{

@@ -22,6 +22,8 @@ public abstract class UIComponent
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
 
+	public int getTextSize() { return textSize; }
+	public void setTextSize(int val) { textSize = val; }
 
 	private String text;
 	public String getText() { return text; }

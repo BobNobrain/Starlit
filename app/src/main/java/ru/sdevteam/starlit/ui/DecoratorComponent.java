@@ -59,11 +59,13 @@ public class DecoratorComponent extends UIComponent
 	@Override
 	public void setBackgroundColor(int a, int r, int g, int b)
 	{
+		super.setBackgroundColor(a, r, g, b);
 		decorated.setBackgroundColor(a, r, g, b);
 	}
 	@Override
 	public void setTextColor(int a, int r, int g, int b)
 	{
+		super.setTextColor(a, r, g, b);
 		decorated.setTextColor(a, r, g, b);
 	}
 
@@ -86,6 +88,11 @@ public class DecoratorComponent extends UIComponent
 	public void locate(int nx, int ny) { decorated.locate(nx, ny); }
 	@Override
 	public void resize(int nw, int nh) { decorated.resize(nw, nh); }
+
+	@Override
+	public int getTextSize() { return decorated.getTextSize(); }
+	@Override
+	public void setTextSize(int val) { decorated.setTextSize(val); }
 
 	@Override
 	public String getText() { return decorated.getText(); }

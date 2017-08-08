@@ -13,6 +13,7 @@ public class BuildInterface extends CompoundComponent
 	private UIComponent buildGButton, buildOButton;
 	private CompoundComponent toggleableContainer;
 	private ListComponent categories, buildings;
+	private CheckboxGroup bsCBG;
 	private CompoundComponent infoPanel;
 	private Label buildingDescription;
 	private boolean isActive;
@@ -55,12 +56,13 @@ public class BuildInterface extends CompoundComponent
 			toggleableContainer.getHeight(),
 			listPadding, true
 		);
-		for (int i = 0; i < 7; i++)
+		for (Building.Type cat : Building.Type.values())
 		{
-			categories.appendChild(new Checkbox(new DynamicFoneComponent(0, 0, panelW, panelW, "" + i)));
+			categories.appendChild(new CatCheckbox(cat, panelW));
 		}
 		CheckboxGroup catsCBG = new CheckboxGroup(categories);
 		catsCBG.inspectCheckboxes();
+		catsCBG.subscribeStateChanged(onCategorySelected);
 
 		categories.appendChild(catsCBG);
 
@@ -72,7 +74,7 @@ public class BuildInterface extends CompoundComponent
 			toggleableContainer.getHeight(),
 			listPadding, true
 		);
-		for (Building b: BuildingsRegistry.getForCategory(Building.Type.STORAGE))
+		for (Building b : BuildingsRegistry.getForCategory(Building.Type.STORAGE))
 		{
 			buildings.appendChild(new BuildingCheckbox(b, 1, panelW * 2 / 3));
 		}
@@ -82,7 +84,7 @@ public class BuildInterface extends CompoundComponent
 //				new Checkbox(new DynamicFoneComponent(0, 0, 1, panelW * 2 / 3, "Building " + i))
 //			);
 //		}
-		CheckboxGroup bsCBG = new CheckboxGroup(buildings);
+		bsCBG = new CheckboxGroup(buildings);
 		bsCBG.inspectCheckboxes();
 		bsCBG.subscribeStateChanged(onBuildingSelected);
 
@@ -125,10 +127,21 @@ public class BuildInterface extends CompoundComponent
 		// linking everything into container
 		toggleableContainer.appendChild(categories);
 		toggleableContainer.appendChild(buildings);
-		toggleableContainer.appendChild(infoPanel);
+		toggleableContainer.appendChild(new StaticFoneComponent(infoPanel));
 
 		appendChild(mainButton);
 //		appendChild(toggleableContainer);
+	}
+
+	@Override
+	public void setTextSizeForAll(int val)
+	{
+		super.setTextSizeForAll(val);
+		if (!isActive)
+		{
+			// is not appended to children, but textsize should be changed too
+			toggleableContainer.setTextSizeForAll(val);
+		}
 	}
 
 	private void toggleInterface(boolean state)
@@ -146,7 +159,14 @@ public class BuildInterface extends CompoundComponent
 
 	private void showDescription(Building b)
 	{
-		buildingDescription.setText(String.format("@u;%1$s@d;\n\n%2$s", b.getName(), b.getDescription()));
+		if (b != null)
+		{
+			buildingDescription.setText(String.format("@u;%1$s@d;\n\n%2$s", b.getName(), b.getDescription()));
+		}
+		else
+		{
+			buildingDescription.setText("Select a building");
+		}
 	}
 
 	private CheckboxGroup.StateChangedListener onBuildingSelected = new CheckboxGroup.StateChangedListener()
@@ -154,8 +174,57 @@ public class BuildInterface extends CompoundComponent
 		@Override
 		public void onStateChanged(Checkbox newChecked)
 		{
-			BuildingCheckbox b = (BuildingCheckbox) newChecked;
-			showDescription(b.getBuilding());
+			if (newChecked != null)
+			{
+				BuildingCheckbox b = (BuildingCheckbox) newChecked;
+				showDescription(b.getBuilding());
+			}
+			else
+			{
+				showDescription(null);
+			}
 		}
 	};
+
+	private void showCategory(Building.Type cat)
+	{
+		if (cat == null) return;
+		buildings.clear();
+		bsCBG.clear();
+		for (Building b : BuildingsRegistry.getForCategory(cat))
+		{
+			buildings.appendChild(new BuildingCheckbox(b, 1, panelW * 2 / 3));
+		}
+		bsCBG.inspectCheckboxes();
+		buildings.setTextSizeForAll(getTextSize());
+	}
+
+	private CheckboxGroup.StateChangedListener onCategorySelected = new CheckboxGroup.StateChangedListener()
+	{
+		@Override
+		public void onStateChanged(Checkbox newChecked)
+		{
+			if (newChecked != null)
+			{
+				CatCheckbox c = (CatCheckbox) newChecked;
+				showCategory(c.cat);
+			}
+			else
+			{
+				showCategory(null);
+			}
+		}
+	};
+
+
+	private class CatCheckbox extends Checkbox
+	{
+		Building.Type cat;
+
+		CatCheckbox(Building.Type t, int panelW)
+		{
+			super(new DynamicFoneComponent(0, 0, panelW, panelW, t.name()));
+			cat = t;
+		}
+	}
 }

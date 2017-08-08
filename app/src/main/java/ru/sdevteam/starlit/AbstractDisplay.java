@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import ru.sdevteam.starlit.craft.res.ResAvailability;
 import ru.sdevteam.starlit.craft.res.ResClass;
+import ru.sdevteam.starlit.ui.GameUI;
 import ru.sdevteam.starlit.utils.Drawing;
 import ru.sdevteam.starlit.utils.MathUtils;
 import ru.sdevteam.starlit.world.Celestial;
@@ -15,7 +16,8 @@ import ru.sdevteam.starlit.world.Celestial;
  */
 public abstract class AbstractDisplay
 {
-	public AbstractDisplay(int screenWidth, int screenHeight)
+	protected GameUI gameUI;
+	public AbstractDisplay(int screenWidth, int screenHeight, GameUI gameUI)
 	{
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
@@ -57,7 +59,13 @@ public abstract class AbstractDisplay
 		resObtainedPaintSelected.setColor(SELECTION_COLOR);
 		resObtainedPaintSelected.setAntiAlias(true);
 
-		statusText = "";
+//		statusText = "";
+		this.gameUI = gameUI;
+	}
+
+	protected void setStatusText(String text)
+	{
+		gameUI.setStatusText(text);
 	}
 
 	//
@@ -124,8 +132,8 @@ public abstract class AbstractDisplay
 	protected static final int TEXT_SIZE_REL = 5;
 
 
-	protected String statusText;
-	protected String getStatusText() { return statusText; }
+//	protected String statusText;
+//	protected String getStatusText() { return statusText; }
 
 	public abstract void drawContent(Canvas c);
 
