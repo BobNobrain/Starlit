@@ -2,6 +2,7 @@ package ru.sdevteam.starlit.world;
 
 import ru.sdevteam.starlit.craft.buildings.BuildingPlace;
 import ru.sdevteam.starlit.craft.buildings.BuildingSystem;
+import ru.sdevteam.starlit.craft.buildings.PlanetBuildingSystem;
 import ru.sdevteam.starlit.craft.res.ResClass;
 import ru.sdevteam.starlit.craft.res.ResTables;
 import ru.sdevteam.starlit.craft.res.ResType;
@@ -34,7 +35,7 @@ public class Planet extends Celestial
 	{
 		materialType = PlanetMaterialType.getRandom(random1, orbitDistanceNorm);
 		sizeType = PlanetSizeType.getRandomFor(random2, materialType);
-		buildings = new BuildingSystem(sizeType.maxBuildings, BuildingPlace.GROUND);
+		buildings = new PlanetBuildingSystem(sizeType.maxBuildings, sizeType.maxOrbitSize);
 	}
 
 	public void spawnResources(Random rnd)

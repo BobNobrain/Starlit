@@ -1,9 +1,11 @@
 package ru.sdevteam.starlit.world;
 
+import ru.sdevteam.starlit.craft.buildings.BuildingSystem;
+import ru.sdevteam.starlit.craft.buildings.PlanetBuildingSystem;
 import ru.sdevteam.starlit.craft.res.ResType;
 
 /**
- * Created by user on 23.06.2016.
+ * A single star
  */
 public class Star extends Celestial
 {
@@ -30,11 +32,13 @@ public class Star extends Celestial
 		this.doubled = doubled;
 		++totalStarsCount;
 
+		// TODO: not type.size but some actual values!
+		buildings = new PlanetBuildingSystem(0, type.size);
+
 		enableResource(ResType.ENERGY);
 	}
 	public Star(Sector location, int sx, int sy, StarType type, boolean doubled)
 	{
 		this(location, sx, sy, type, doubled, location.getName()+"-#"+(totalStarsCount+1));
 	}
-
 }

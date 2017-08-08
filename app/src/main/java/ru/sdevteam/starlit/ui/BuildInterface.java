@@ -1,28 +1,44 @@
 package ru.sdevteam.starlit.ui;
 
+import ru.sdevteam.starlit.SelectionChangedEvent;
 import ru.sdevteam.starlit.craft.buildings.Building;
+import ru.sdevteam.starlit.craft.buildings.BuildingSystem;
 import ru.sdevteam.starlit.craft.buildings.BuildingsRegistry;
+import ru.sdevteam.starlit.craft.buildings.PlanetBuildingSystem;
+import ru.sdevteam.starlit.world.BuildingSystemProvider;
+import ru.sdevteam.starlit.world.Planet;
 
 /**
  * Class represents interface that allows user build in build systems
  */
-public class BuildInterface extends CompoundComponent
+public class BuildInterface extends CompoundComponent implements SelectionChangedEvent.Listener
 {
+	private GameUI root;
+
 	private int panelW;
 	private Checkbox mainButton;
-	private UIComponent buildGButton, buildOButton;
+	private Button buildGButton, buildOButton;
 	private CompoundComponent toggleableContainer;
 	private ListComponent categories, buildings;
 	private CheckboxGroup bsCBG;
 	private CompoundComponent infoPanel;
 	private Label buildingDescription;
+
 	private boolean isActive;
 
-	public BuildInterface(int x, int y, int width, int height, int panelWidth)
+	private Building selectedBuilding;
+	private Building.Type selectedCategory;
+
+	public BuildInterface(GameUI root, int x, int y, int width, int height, int panelWidth)
 	{
 		super(x, y, width, height);
 		panelW = panelWidth;
+		this.root = root;
+		root.getSelectionChangedEvent().subscribe(this);
 		initComponents();
+
+		showCategory(Building.Type.STORAGE);
+		((CatCheckbox) categories.getChildren().get(0)).setState(true);
 	}
 
 	private void initComponents()
@@ -74,16 +90,6 @@ public class BuildInterface extends CompoundComponent
 			toggleableContainer.getHeight(),
 			listPadding, true
 		);
-		for (Building b : BuildingsRegistry.getForCategory(Building.Type.STORAGE))
-		{
-			buildings.appendChild(new BuildingCheckbox(b, 1, panelW * 2 / 3));
-		}
-//		for (int i = 0; i < 15; i++)
-//		{
-//			buildings.appendChild(
-//				new Checkbox(new DynamicFoneComponent(0, 0, 1, panelW * 2 / 3, "Building " + i))
-//			);
-//		}
 		bsCBG = new CheckboxGroup(buildings);
 		bsCBG.inspectCheckboxes();
 		bsCBG.subscribeStateChanged(onBuildingSelected);
@@ -162,11 +168,25 @@ public class BuildInterface extends CompoundComponent
 		if (b != null)
 		{
 			buildingDescription.setText(String.format("@u;%1$s@d;\n\n%2$s", b.getName(), b.getDescription()));
+			PlanetBuildingSystem bs = obtainBuildingSystem();
+			if (bs != null)
+			{
+				buildGButton.setEnabled(bs.getGround().canBuild(b) == BuildingSystem.BuildFailedReason.NONE);
+				buildOButton.setEnabled(bs.getOrbit().canBuild(b) == BuildingSystem.BuildFailedReason.NONE);
+			}
+			else
+			{
+				buildGButton.setEnabled(false);
+				buildOButton.setEnabled(false);
+			}
 		}
 		else
 		{
 			buildingDescription.setText("Select a building");
+			buildGButton.setEnabled(false);
+			buildOButton.setEnabled(false);
 		}
+		selectedBuilding = b;
 	}
 
 	private CheckboxGroup.StateChangedListener onBuildingSelected = new CheckboxGroup.StateChangedListener()
@@ -188,15 +208,33 @@ public class BuildInterface extends CompoundComponent
 
 	private void showCategory(Building.Type cat)
 	{
+		selectedCategory = cat;
 		if (cat == null) return;
 		buildings.clear();
 		bsCBG.clear();
+
+		PlanetBuildingSystem bs = obtainBuildingSystem();
+
 		for (Building b : BuildingsRegistry.getForCategory(cat))
 		{
-			buildings.appendChild(new BuildingCheckbox(b, 1, panelW * 2 / 3));
+			buildings.appendChild(createBuildingCheckbox(b, bs));
 		}
 		bsCBG.inspectCheckboxes();
 		buildings.setTextSizeForAll(getTextSize());
+	}
+
+	private BuildingCheckbox createBuildingCheckbox(Building b, PlanetBuildingSystem bs)
+	{
+		BuildingCheckbox result = new BuildingCheckbox(b, 1, panelW * 2 / 3);
+		if (bs == null)
+		{
+			result.defineColor(null, null);
+		}
+		else
+		{
+			result.defineColor(bs.getGround().canBuild(b), bs.getOrbit().canBuild(b));
+		}
+		return result;
 	}
 
 	private CheckboxGroup.StateChangedListener onCategorySelected = new CheckboxGroup.StateChangedListener()
@@ -215,6 +253,27 @@ public class BuildInterface extends CompoundComponent
 			}
 		}
 	};
+
+	@Override
+	public void onSelectionChanged(Object newSelection)
+	{
+		// redraw list and info panel to represent actual relation to selected object
+		showCategory(selectedCategory);
+		showDescription(selectedBuilding);
+	}
+
+	private PlanetBuildingSystem obtainBuildingSystem()
+	{
+		Object selected = root.getSelectedObject();
+		if (selected instanceof BuildingSystemProvider)
+		{
+			return ((BuildingSystemProvider) selected).getBuildingSystem();
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 
 	private class CatCheckbox extends Checkbox

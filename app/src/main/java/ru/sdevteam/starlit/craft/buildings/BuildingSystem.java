@@ -32,7 +32,7 @@ public class BuildingSystem
 	}
 
 
-	public BuildFailedReason build(Building b)
+	public BuildFailedReason canBuild(Building b)
 	{
 		if(!b.canBePlacedAt(location)) return BuildFailedReason.INVALID_LOCATION;
 		if(!getTotalResourcesStored().isGreaterOrEqualThan(b.getPrice())) return BuildFailedReason.NOT_ENOUGH_RESOURCES;
@@ -40,10 +40,17 @@ public class BuildingSystem
 		int index = getFreeIndex();
 		if(index == NO_FREE_SPACE) return BuildFailedReason.NOT_ENOUGH_PLACE;
 
-		buildings[index] = b;
-		b.appendToSystem(this);
-
 		return BuildFailedReason.NONE;
+	}
+
+	public void build(Building b)
+	{
+		if (canBuild(b) == BuildFailedReason.NONE)
+		{
+			int index = getFreeIndex();
+			buildings[index] = b;
+			b.appendToSystem(this);
+		}
 	}
 
 	private int getFreeIndex()

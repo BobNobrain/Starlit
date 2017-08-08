@@ -13,7 +13,7 @@ import java.util.Vector;
 public abstract class UIComponent
 {
 	private volatile int x, y, width, height;
-	protected volatile int textSize;
+	private volatile int textSize;
 
 	public void locate(int nx, int ny) { x = nx; y = ny; }
 	public void resize(int nw, int nh) { width = nw; height = nh; }

@@ -12,9 +12,9 @@ import ru.sdevteam.starlit.utils.MathUtils;
 import ru.sdevteam.starlit.world.Celestial;
 
 /**
- * Created by user on 26.06.2016.
+ * An abstract display that can render some in-game world parts
  */
-public abstract class AbstractDisplay
+public abstract class AbstractDisplay implements SelectionProvider
 {
 	protected GameUI gameUI;
 	public AbstractDisplay(int screenWidth, int screenHeight, GameUI gameUI)
@@ -61,6 +61,8 @@ public abstract class AbstractDisplay
 
 //		statusText = "";
 		this.gameUI = gameUI;
+
+		selectionChanged = new SelectionChangedEvent();
 	}
 
 	protected void setStatusText(String text)
@@ -190,6 +192,9 @@ public abstract class AbstractDisplay
 
 	public abstract void selectObjectUnder(float screenX, float screenY);
 	public abstract AbstractDisplay displayObjectUnder(float screenX, float screenY);
+
+	protected SelectionChangedEvent selectionChanged;
+	public SelectionChangedEvent getSelectionChangedEvent() { return selectionChanged; }
 
 
 	public void update()

@@ -124,12 +124,17 @@ public class StarDisplay extends AbstractDisplay
 			if(MathUtils.dist2Between(screenX, screenY, sx, sy) < selectionRadius*selectionRadius)
 			{
 				selected = p;
+				selectionChanged.invoke(selected);
 				formStatusText(i);
 				return;
 			}
 		}
-		selected = null;
-		formStatusText(-1);
+		if (selected != null)
+		{
+			selected = null;
+			selectionChanged.invoke(selected);
+			formStatusText(-1);
+		}
 	}
 
 	@Override
@@ -143,5 +148,14 @@ public class StarDisplay extends AbstractDisplay
 	{
 		super.update();
 		star.update();
+	}
+
+	@Override
+	public Object getSelectedObject()
+	{
+		if (selected != null)
+			return selected;
+		else
+			return star;
 	}
 }

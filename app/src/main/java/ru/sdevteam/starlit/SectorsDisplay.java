@@ -149,11 +149,16 @@ public class SectorsDisplay extends AbstractDisplay
 						< selectionRadius * selectionRadius)
 				{
 					selected = stars[star];
+					selectionChanged.invoke(selected);
 					return;
 				}
 			}
 		}
-		selected = null;
+		if (selected != null)
+		{
+			selected = null;
+			selectionChanged.invoke(selected);
+		}
 	}
 
 	@Override
@@ -187,5 +192,16 @@ public class SectorsDisplay extends AbstractDisplay
 			visible = world.getVisibleSectors(vpX, vpY);
 		}
 		setStatusText(String.format("Sector %1$s", visible[0].getName()));
+	}
+
+	@Override
+	public Object getSelectedObject()
+	{
+		if (selected != null)
+			return selected;
+		else if (visible != null && visible.length > 0)
+			return visible[0];
+		else
+			return world;
 	}
 }

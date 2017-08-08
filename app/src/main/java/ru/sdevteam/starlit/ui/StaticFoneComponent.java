@@ -10,11 +10,11 @@ public class StaticFoneComponent extends DecoratorComponent
 	public StaticFoneComponent(UIComponent of)
 	{
 		super(of);
-		setBackgroundColor(64, 255, 255, 255);
+		setBackgroundColor(32, 255, 255, 255);
 	}
 
 	@Override
-	protected void paintFone(Canvas c)
+	public void paint(Canvas c)
 	{
 		c.drawRect(
 			decorated.getX(),
@@ -23,5 +23,7 @@ public class StaticFoneComponent extends DecoratorComponent
 			decorated.getY() + decorated.getHeight(),
 			getFonePaint()
 		);
+
+		decorated.paint(c);
 	}
 }

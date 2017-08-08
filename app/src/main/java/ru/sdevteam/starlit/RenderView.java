@@ -22,7 +22,10 @@ import ru.sdevteam.starlit.world.World;
 public class RenderView extends SurfaceView implements
 											SurfaceHolder.Callback,
 											GestureDetector.OnGestureListener,
-											GestureDetector.OnDoubleTapListener
+											GestureDetector.OnDoubleTapListener,
+
+											SelectionProvider,
+											SelectionChangedEvent.Listener
 {
 	public static final float MIN_DRAG_DIST = 5F;
 	private Paint p;
@@ -41,12 +44,13 @@ public class RenderView extends SurfaceView implements
 
 	private AbstractDisplay currentDisplay;
 	private SectorsDisplay sectorsDisplay;
-	// TODO: private StarDisplay lastStarDisplay;
-	// mb? private GalaxyDisplay galaxyDisplay;
+	// TODO: private StarDisplay lastStarDisplay; ??
 
 	private GameUI componentsRoot;
 
 	private World currentWorld;
+
+	private SelectionChangedEvent selectionChanged;
 
 
 	public RenderView(Context context, AttributeSet attrs)
@@ -60,6 +64,8 @@ public class RenderView extends SurfaceView implements
 		gd.setOnDoubleTapListener(this);
 
 		currentWorld = new World(1);
+
+		selectionChanged = new SelectionChangedEvent();
 	}
 
 	private void initSizes()
@@ -70,12 +76,13 @@ public class RenderView extends SurfaceView implements
 		// TODO: define this magic values in more magical way
 		panelWidth = realWidth / 10;
 		textSize = realWidth / 40;
-		componentsRoot = new GameUI(realWidth, realHeight, panelWidth, textSize);
+		componentsRoot = new GameUI(this, realWidth, realHeight, panelWidth, textSize);
 
 		if(currentDisplay == null)
 		{
 			sectorsDisplay = new SectorsDisplay(currentWorld, realWidth, realHeight, componentsRoot);
 			currentDisplay = sectorsDisplay;
+			sectorsDisplay.getSelectionChangedEvent().subscribe(this);
 		}
 
 		buffer = Bitmap.createBitmap(realWidth, realHeight, Bitmap.Config.ARGB_8888);
@@ -130,6 +137,25 @@ public class RenderView extends SurfaceView implements
 			if(screenCanvas != null)
 				holder.unlockCanvasAndPost(screenCanvas);
 		}
+	}
+
+	public Object getSelectedObject()
+	{
+		if (currentDisplay != null)
+			return currentDisplay.getSelectedObject();
+		return null;
+	}
+
+	@Override
+	public SelectionChangedEvent getSelectionChangedEvent()
+	{
+		return selectionChanged;
+	}
+
+	@Override
+	public void onSelectionChanged(Object newSelection)
+	{
+		selectionChanged.invoke(newSelection);
 	}
 
 	@Override
@@ -304,8 +330,15 @@ public class RenderView extends SurfaceView implements
 				if (d != null)
 				{
 					currentDisplay = d;
+					d.getSelectionChangedEvent().subscribe(this);
+					sectorsDisplay.getSelectionChangedEvent().unsubscribe(this);
 				}
-				else currentDisplay = sectorsDisplay;
+				else
+				{
+					currentDisplay.getSelectionChangedEvent().unsubscribe(this);
+					currentDisplay = sectorsDisplay;
+					sectorsDisplay.getSelectionChangedEvent().subscribe(this);
+				}
 			}
 		}
 		return true;

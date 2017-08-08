@@ -34,6 +34,7 @@ public class Checkbox extends DecoratorComponent
 	{
 		super.setBackgroundColor(a, r, g, b);
 		makeBgColorOn();
+		toggle(active);
 	}
 	private void makeBgColorOn()
 	{
@@ -50,6 +51,7 @@ public class Checkbox extends DecoratorComponent
 	{
 		super.setTextColor(a, r, g, b);
 		makeTextColorOff();
+		toggle(active);
 	}
 	private void makeTextColorOff()
 	{

@@ -1,16 +1,16 @@
 package ru.sdevteam.starlit.world;
 
 import ru.sdevteam.starlit.craft.buildings.BuildingSystem;
-import ru.sdevteam.starlit.craft.res.ResAmount;
+import ru.sdevteam.starlit.craft.buildings.PlanetBuildingSystem;
 import ru.sdevteam.starlit.craft.res.ResAvailability;
 import ru.sdevteam.starlit.craft.res.ResClass;
 import ru.sdevteam.starlit.craft.res.ResType;
 import ru.sdevteam.starlit.utils.MathUtils;
 
 /**
- * Created by user on 23.06.2016.
+ * A celestial body in the world. Can have satellites and is a key object of game process
  */
-public abstract class Celestial
+public abstract class Celestial implements BuildingSystemProvider
 {
 	protected float getOrbitSpeedCoeff() { return 500; }
 
@@ -57,8 +57,8 @@ public abstract class Celestial
 		return false;
 	}
 
-	protected BuildingSystem buildings;
-	public BuildingSystem getBuildingSystem()
+	protected PlanetBuildingSystem buildings;
+	public PlanetBuildingSystem getBuildingSystem()
 	{
 		return buildings;
 	}

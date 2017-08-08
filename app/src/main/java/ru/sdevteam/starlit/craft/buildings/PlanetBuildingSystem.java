@@ -4,7 +4,7 @@ import ru.sdevteam.starlit.craft.res.ResAmount;
 import ru.sdevteam.starlit.craft.res.StorageLimit;
 
 /**
- * Compound build system (includes ground and orbit
+ * Compound build system (includes ground and orbit)
  */
 public class PlanetBuildingSystem extends BuildingSystem
 {
@@ -33,11 +33,13 @@ public class PlanetBuildingSystem extends BuildingSystem
 	}
 
 	@Override
-	public BuildFailedReason build(Building b)
+	public BuildFailedReason canBuild(Building b)
 	{
 		// this should never be called
 		return BuildFailedReason.INVALID_LOCATION;
 	}
+	@Override
+	public void build(Building b) { /* and this should never be called too */ }
 
 	@Override
 	public ResAmount getTotalResourcesStored()
