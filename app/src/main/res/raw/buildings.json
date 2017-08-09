@@ -10,6 +10,7 @@
     "class": "starlit.craft.buildings.Storage",
     "storage_limit": [10, 7, 10, 15]
   },
+
   {
     "name": "Storage",
     "price": [8, 0, 0, 0, 0, 0, 0],
@@ -23,7 +24,7 @@
   },
   {
     "name": "Warehouse",
-    "price": [15, 3, 0, 0, 0, 0, 5],
+    "price": [15, 3, 0, 0, 0, 0, 15],
     "destruct_price": [12, 2, 0, 0, 0, 0, 0],
     "population": 10,
     "time": 5000,
@@ -34,7 +35,7 @@
   },
   {
     "name": "Massive Warehouse",
-    "price": [35, 10, 0, 0, 0, 0, 10],
+    "price": [35, 10, 0, 0, 0, 0, 30],
     "destruct_price": [30, 6, 0, 0, 0, 0, 0],
     "population": 10,
     "time": 5000,
@@ -43,10 +44,11 @@
     "class": "starlit.craft.buildings.Storage",
     "storage_limit": [125, 65, 150, 200]
   },
+
   {
     "name": "Metal Plant",
     "desc": "A primitive plant that obtains metal ore from planet and melts it into metal",
-    "price": [7, 1, 0, 0, 0, 0, 3],
+    "price": [7, 1, 0, 0, 0, 0, 8],
     "destruct_price": [5, 0, 0, 0, 0, 0, 0],
     "population": 5,
     "time": 2000,
@@ -56,6 +58,46 @@
     "plant_speed": [1, 0, 0, 0, 0, 0, 0],
     "plant_consumption": [0, 0, 0, 0, 0, 0, 1]
   },
+  {
+    "name": "Mineral Factory",
+    "desc": "A simple factory that obtains crystals from planet",
+    "price": [5, 3, 0, 0, 0, 0, 8],
+    "destruct_price": [4, 2, 0, 0, 0, 0, 0],
+    "population": 5,
+    "time": 2000,
+    "place": ["GROUND"],
+    "tech_level": 0,
+    "class": "starlit.craft.buildings.Plant",
+    "plant_speed": [0, 1, 0, 0, 0, 0, 0],
+    "plant_consumption": [0, 0, 0, 0, 0, 0, 1]
+  },
+  {
+    "name": "Plutonium Plant",
+    "desc": "Obtains plutonium from inside the planet",
+    "price": [14, 5, 0, 0, 0, 0, 15],
+    "destruct_price": [10, 3, 0, 0, 0, 0, 0],
+    "population": 10,
+    "time": 3500,
+    "place": ["GROUND"],
+    "tech_level": 0,
+    "class": "starlit.craft.buildings.Plant",
+    "plant_speed": [0, 0, 1, 0, 0, 0, 0],
+    "plant_consumption": [0, 0, 0, 0, 0, 0, 3]
+  },
+  {
+    "name": "Small Solar Power Station",
+    "desc": "A couple of solar panels providing you with energy from your star",
+    "price": [5, 6, 0, 0, 0, 0, 0],
+    "destruct_price": [3, 2, 0, 0, 0, 0, 0],
+    "population": 0,
+    "time": 750,
+    "place": ["GROUND", "PLANET_ORBIT"],
+    "tech_level": 0,
+    "class": "starlit.craft.buildings.Plant",
+    "plant_speed": [0, 0, 0, 0, 0, 0, 1],
+    "plant_consumption": [0, 0, 0, 0, 0, 0, 0]
+  },
+
   {
     "name": "Shipyard",
     "desc": "Basic shipyard. Produces cargo ships. Not fast, but cheap way to start your fleet.",
