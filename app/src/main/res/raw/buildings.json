@@ -7,7 +7,7 @@
     "time": 1000,
     "place": ["GROUND"],
     "tech_level": 0,
-    "class": "starlit.craft.buildings.Storage",
+    "class": "ru.sdevteam.starlit.craft.buildings.Storage",
     "storage_limit": [10, 7, 10, 15]
   },
 
@@ -19,7 +19,7 @@
     "time": 1500,
     "place": ["GROUND", "PLANET_ORBIT", "STAR_ORBIT"],
     "tech_level": 0,
-    "class": "starlit.craft.buildings.Storage",
+    "class": "ru.sdevteam.starlit.craft.buildings.Storage",
     "storage_limit": [15, 25, 20, 40]
   },
   {
@@ -30,7 +30,7 @@
     "time": 5000,
     "place": ["GROUND", "PLANET_ORBIT", "STAR_ORBIT"],
     "tech_level": 0,
-    "class": "starlit.craft.buildings.Storage",
+    "class": "ru.sdevteam.starlit.craft.buildings.Storage",
     "storage_limit": [50, 40, 50, 100]
   },
   {
@@ -41,7 +41,7 @@
     "time": 5000,
     "place": ["GROUND", "PLANET_ORBIT", "STAR_ORBIT"],
     "tech_level": 1,
-    "class": "starlit.craft.buildings.Storage",
+    "class": "ru.sdevteam.starlit.craft.buildings.Storage",
     "storage_limit": [125, 65, 150, 200]
   },
 
@@ -54,7 +54,7 @@
     "time": 2000,
     "place": ["GROUND"],
     "tech_level": 0,
-    "class": "starlit.craft.buildings.Plant",
+    "class": "ru.sdevteam.starlit.craft.buildings.Plant",
     "plant_speed": [1, 0, 0, 0, 0, 0, 0],
     "plant_consumption": [0, 0, 0, 0, 0, 0, 1]
   },
@@ -67,7 +67,7 @@
     "time": 2000,
     "place": ["GROUND"],
     "tech_level": 0,
-    "class": "starlit.craft.buildings.Plant",
+    "class": "ru.sdevteam.starlit.craft.buildings.Plant",
     "plant_speed": [0, 1, 0, 0, 0, 0, 0],
     "plant_consumption": [0, 0, 0, 0, 0, 0, 1]
   },
@@ -80,7 +80,7 @@
     "time": 3500,
     "place": ["GROUND"],
     "tech_level": 0,
-    "class": "starlit.craft.buildings.Plant",
+    "class": "ru.sdevteam.starlit.craft.buildings.Plant",
     "plant_speed": [0, 0, 1, 0, 0, 0, 0],
     "plant_consumption": [0, 0, 0, 0, 0, 0, 3]
   },
@@ -93,7 +93,7 @@
     "time": 750,
     "place": ["GROUND", "PLANET_ORBIT"],
     "tech_level": 0,
-    "class": "starlit.craft.buildings.Plant",
+    "class": "ru.sdevteam.starlit.craft.buildings.Plant",
     "plant_speed": [0, 0, 0, 0, 0, 0, 1],
     "plant_consumption": [0, 0, 0, 0, 0, 0, 0]
   },
@@ -107,7 +107,7 @@
     "time": 3000,
     "place": ["PLANET_ORBIT"],
     "tech_level": 1,
-    "class": "starlit.craft.buildings.Shipyard",
+    "class": "ru.sdevteam.starlit.craft.buildings.Shipyard",
     "ship_price": [1, 0, 0, 0, 0, 0, 0],
     "ships_amount": 3,
     "ship_type": "CARGO"
@@ -121,7 +121,7 @@
     "time": 5000,
     "place": ["GROUND"],
     "tech_level": 0,
-    "class": "starlit.craft.buildings.University",
+    "class": "ru.sdevteam.starlit.craft.buildings.University",
     "sp_speed": 0.1
   }
 ]

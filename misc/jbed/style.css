@@ -1,0 +1,128 @@
+@font-face {
+	font-family: "Icons";
+	src: url("generated/symbols.ttf");
+}
+@font-face {
+	font-family: "Jura";
+	src: url("generated/jura.ttf");
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	font-family: Jura;
+	font-size: 12pt;
+}
+
+body {
+	display: flex;
+	flex-flow: column;
+	background: #333;
+	color: #eee;
+}
+
+.hidden {
+	display: none;
+}
+
+#content {
+	width: 100%;
+}
+.scroller {
+	height: 100%;
+	overflow: hidden auto;
+}
+
+nav {
+	background: #222;
+	display: flex;
+	flex: row;
+}
+nav a {
+	color: #eee;
+	text-decoration: none;
+	font-weight: bold;
+	padding: 0.3em 0.4em;
+	display: block;
+}
+nav a:hover {
+	background: #eee;
+	color: #000;
+}
+
+.building {
+	background: #272727;
+	margin: 0.5em;
+	padding: 0;
+}
+
+.building table {
+	padding: 0;
+	margin: 0;
+	width: 100%;
+}
+
+.building td {
+	padding: 0.3em;
+	vertical-align: middle;
+}
+
+.building td:first-child {
+	font-weight: bold;
+	color: #ddd;
+	text-align: right;
+	min-width: 20%;
+	max-width: 40%;
+}
+
+/* Styles for different editors */
+
+.building td input[type="text"],
+.building td input[type="number"],
+.building td textarea {
+	font-family: Jura;
+	font-size: 12pt;
+	border: 1px solid #333;
+	color: #eee;
+	background: #111;
+	border-radius: 0;
+	padding: 0.3em;
+	margin: 0;
+	width: 40em;
+}
+
+.building td input[type="number"] {
+	width: 5em;
+}
+
+.building td.text {
+}
+
+.building td.number {
+	font-family: Consolas, monospace;
+}
+
+.building td.jclass {
+	font-family: Consolas, monospace;
+}
+
+.building td.price input[type="number"],
+.building td.storage_limit input[type="number"], {
+	width: 3em;
+	text-align: right;
+    -moz-appearance:textfield;
+}
+.building td.price input::-webkit-outer-spin-button,
+.building td.price input::-webkit-outer-spin-button,
+.building td.storage_limit input::-webkit-inner-spin-button,
+.building td.storage_limit input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+.building td.price span,
+.building td.storage_limit span {
+	font-family: Icons;
+	color: #fff;
+	font-size: 18pt;
+	margin-right: 1em;
+}
