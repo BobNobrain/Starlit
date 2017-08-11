@@ -1,0 +1,226 @@
+[
+{
+	"cat": "ENGINE",
+	"content":
+	[
+		{
+			"id": "s.e.ip_engine",
+			"name": "Interplanetary Engines",
+			"description": "Allows you to travel in space",
+			"levels": [
+				{
+					"cost": 0,
+					"buffs": [
+						{
+							"obj": "FRACTION",
+							"prop": "engineSpeed",
+							"value": 1
+						},
+						{
+							"obj": "FRACTION",
+							"prop": "interplanetary",
+							"value": true
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "s.e.is_engine",
+			"name": "Interstellar Engines",
+			"description": "Allows you to travel from star to star",
+			"levels": [
+				{
+					"cost": 150,
+					"buffs": [
+						{
+							"obj": "FRACTION",
+							"prop": "engineSpeed",
+							"mul": 1.5
+						},
+						{
+							"obj": "FRACTION",
+							"prop": "interstellar",
+							"value": true
+						}
+					],
+					"deps": [ "s.e.ip_engine", "s.c.mechanisms:1" ]
+				}
+			]
+		},
+		{
+			"id": "s.e.spacecutters",
+			"name": "Spacecutters",
+			"description": "Enables you to cut through spacetime to another stars",
+			"levels": [
+				{
+					"cost": 300,
+					"buffs": [
+						{
+							"obj": "FRACTION",
+							"prop": "spacecutters",
+							"value": true
+						}
+					],
+					"deps": [ "s.e.is_engine" ]
+				}
+			]
+		},
+		{
+			"id": "s.e.wormholes",
+			"name": "Wormholes",
+			"description": "Enables you to use wormholes to speed up your interstellar expeditions",
+			"levels": [
+				{
+					"cost": 350,
+					"buffs": [
+						{
+							"obj": "FRACTION",
+							"prop": "wormholes",
+							"value": true
+						}
+					],
+					"deps": [ "s.e.spacecutters" ]
+				}
+			]
+		}
+	]
+},
+{
+	"cat": "COMMON",
+	"content":
+	[
+		{
+			"id": "s.c.materials",
+			"name": "Advanced Materials",
+			"description": "Makes your ships lighter and buildings cheaper",
+			"levels": [
+				{
+					"cost": 150,
+					"buffs": [
+						{
+							"obj": "FRACTION",
+							"prop": "engineSpeed",
+							"mul": 1.2
+						},
+						{
+							"obj": "FRACTION",
+							"prop": "shipCost",
+							"mul": 0.9
+						}
+					],
+				},
+				{
+					"cost": 250,
+					"buffs": [
+						{
+							"obj": "FRACTION",
+							"prop": "engineSpeed",
+							"mul": 1.1
+						},
+						{
+							"obj": "FRACTION",
+							"prop": "shipCost",
+							"mul": 0.9
+						},
+						{
+							"obj": "FRACTION",
+							"prop": "buildingCost",
+							"mul": 0.9
+						}
+					],
+				},
+				{
+					"cost": 280,
+					"buffs": [
+						{
+							"obj": "FRACTION",
+							"prop": "engineSpeed",
+							"mul": 1.1
+						},
+						{
+							"obj": "FRACTION",
+							"prop": "shipCost",
+							"mul": 0.9
+						},
+						{
+							"obj": "FRACTION",
+							"prop": "buildingCost",
+							"mul": 0.9
+						}
+					],
+				}
+			]
+		},
+		{
+			"id": "s.c.mechanisms",
+			"name": "Advanced Mechanisms",
+			"description": "Improves your plants prefomance",
+			"levels": [
+				{
+					"cost": 150,
+					"buffs": [
+						{
+							"obj": "FRACTION",
+							"prop": "plantsSpeed",
+							"mul": 1.2
+						}
+					],
+					"deps": [ "s.c.materials:1" ]
+				},
+				{
+					"cost": 250,
+					"buffs": [
+						{
+							"obj": "FRACTION",
+							"prop": "plantsSpeed",
+							"mul": 1.1
+						}
+					]
+				}
+			]
+			
+		},
+		{
+			"id": "s.c.energy",
+			"name": "Energetics",
+			"description": "Improves your energy consumption",
+			"levels": [
+				{
+					"cost": 150,
+					"buffs": [
+						{
+							"obj": "FRACTION",
+							"prop": "energyConsumption",
+							"mul": 0.9
+						}
+					],
+					"deps": []
+				},
+				{
+					"cost": 250,
+					"buffs": [
+						{
+							"obj": "FRACTION",
+							"prop": "energyConsumption",
+							"mul": 0.9
+						}
+					],
+					"deps": [ "s.c.materials:1" ]
+				},
+				{
+					"cost": 400,
+					"buffs": [
+						{
+							"obj": "FRACTION",
+							"prop": "energyConsumption",
+							"mul": 0.9
+						}
+					],
+					"deps": [ "s.c.mechanisms:2", "s.c.materials:2" ]
+				}
+			]
+		}
+	]
+}
+]

@@ -1,51 +1,53 @@
 [
   {
+    "id": "b.government",
     "name": "Government",
     "price": [5, 0, 0, 0, 0, 0, 0],
     "destruct_price": [4, 0, 0, 0, 0, 0, 0],
     "population": 1,
     "time": 1000,
     "place": ["GROUND"],
-    "tech_level": 0,
     "class": "ru.sdevteam.starlit.craft.buildings.Storage",
     "storage_limit": [10, 7, 10, 15]
   },
 
   {
+    "id": "b.storage.1",
     "name": "Storage",
     "price": [8, 0, 0, 0, 0, 0, 0],
     "destruct_price": [6, 0, 0, 0, 0, 0, 0],
     "population": 0,
     "time": 1500,
     "place": ["GROUND", "PLANET_ORBIT", "STAR_ORBIT"],
-    "tech_level": 0,
     "class": "ru.sdevteam.starlit.craft.buildings.Storage",
     "storage_limit": [15, 25, 20, 40]
   },
   {
+    "id": "b.storage.2",
     "name": "Warehouse",
     "price": [15, 3, 0, 0, 0, 0, 15],
     "destruct_price": [12, 2, 0, 0, 0, 0, 0],
     "population": 10,
     "time": 5000,
     "place": ["GROUND", "PLANET_ORBIT", "STAR_ORBIT"],
-    "tech_level": 0,
     "class": "ru.sdevteam.starlit.craft.buildings.Storage",
     "storage_limit": [50, 40, 50, 100]
   },
   {
+    "id": "b.storage.3",
     "name": "Massive Warehouse",
     "price": [35, 10, 0, 0, 0, 0, 30],
     "destruct_price": [30, 6, 0, 0, 0, 0, 0],
     "population": 10,
     "time": 5000,
     "place": ["GROUND", "PLANET_ORBIT", "STAR_ORBIT"],
-    "tech_level": 1,
+    "science": [ "s.c.materials:1" ]
     "class": "ru.sdevteam.starlit.craft.buildings.Storage",
     "storage_limit": [125, 65, 150, 200]
   },
 
   {
+    "id": "b.plant.metal",
     "name": "Metal Plant",
     "desc": "A primitive plant that obtains metal ore from planet and melts it into metal",
     "price": [7, 1, 0, 0, 0, 0, 8],
@@ -59,6 +61,7 @@
     "plant_consumption": [0, 0, 0, 0, 0, 0, 1]
   },
   {
+    "id": "b.plant.crystal",
     "name": "Mineral Factory",
     "desc": "A simple factory that obtains crystals from planet",
     "price": [5, 3, 0, 0, 0, 0, 8],
@@ -72,6 +75,7 @@
     "plant_consumption": [0, 0, 0, 0, 0, 0, 1]
   },
   {
+    "id": "b.plant.plutonium",
     "name": "Plutonium Plant",
     "desc": "Obtains plutonium from inside the planet",
     "price": [14, 5, 0, 0, 0, 0, 15],
@@ -85,6 +89,7 @@
     "plant_consumption": [0, 0, 0, 0, 0, 0, 3]
   },
   {
+    "id": "b.plant.power",
     "name": "Small Solar Power Station",
     "desc": "A couple of solar panels providing you with energy from your star",
     "price": [5, 6, 0, 0, 0, 0, 0],
@@ -99,6 +104,7 @@
   },
 
   {
+    "id": "b.shipyard.1",
     "name": "Shipyard",
     "desc": "Basic shipyard. Produces cargo ships. Not fast, but cheap way to start your fleet.",
     "price": [15, 7, 0, 0, 0, 0, 5],
@@ -112,7 +118,9 @@
     "ships_amount": 3,
     "ship_type": "CARGO"
   },
+
   {
+    "id": "b.science.1",
     "name": "University",
     "desc": "This is a place of science. It will help you gain science points (@3;0.1@0;/sec)",
     "price": [10, 10, 0, 0, 0, 0, 8],
@@ -122,6 +130,6 @@
     "place": ["GROUND"],
     "tech_level": 0,
     "class": "ru.sdevteam.starlit.craft.buildings.University",
-    "sp_speed": 0.1
+    "sp_speed": 1
   }
 ]

@@ -24,20 +24,21 @@ class BuildingRecord
 			dom('button', { type: 'button' }, 'Move Up'),
 			dom('button', { type: 'button' }, 'Move Down'),
 			dom('button', { type: 'button' }, 'Duplicate'),
+			dom('input', { type: 'text', value: '' })
 			dom('button', { type: 'button' }, 'Add Field')
 		];
 		controls[0].addEventListener('click', () => removeRecord(this));
 		controls[1].addEventListener('click', () => moveRecordUp(this));
 		controls[2].addEventListener('click', () => moveRecordDown(this));
 		controls[3].addEventListener('click', () => duplicateRecord(this));
-		controls[4].addEventListener('click', () =>
+		controls[5].addEventListener('click', () =>
 		{
 			const name = prompt('Enter field name:');
 			if (name)
 			{
 				if (name in this.data)
 					return alert('This field already exists!');
-				
+
 				const tr = this.addField(name, void 0);
 				$(tr).insertAfter($(this.el).find('table tr:last-child'));
 			}
