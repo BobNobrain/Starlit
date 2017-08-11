@@ -178,7 +178,7 @@ public class BuildInterface extends CompoundComponent implements SelectionChange
 				buildGButton.setEnabled(bs.getGround().canBuild(b) == BuildingSystem.BuildFailedReason.NONE);
 				buildOButton.setEnabled(bs.getOrbit().canBuild(b) == BuildingSystem.BuildFailedReason.NONE);
 
-				root.getResPanel().showWithdraw(bs.getTotalResourcesStored());
+				root.getResPanel().showWithdraw(b.getPrice());
 			}
 			else
 			{

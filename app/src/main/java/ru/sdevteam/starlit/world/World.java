@@ -35,6 +35,7 @@ public class World
 		currentSector.setName("Home sector");
 
 		createHomePlanet(currentSector);
+		conquerHomePlanet();
 
 		startTime = System.currentTimeMillis();
 		timeOffset = 0; // while not loading from file
@@ -177,8 +178,8 @@ public class World
 	{
 		homePlanet.owner = Fraction.PLAYER;
 		PlanetBuildingSystem bs = homePlanet.getBuildingSystem();
-		bs.forceBuild(BuildingsRegistry.forId("b.government"));
-		bs.storeAsMuchAsPossible(new ResAmount(10, 5, 0, 2, 0, 10, 0));
+		bs.getGround().forceBuild(BuildingsRegistry.forId("b.government"));
+		bs.storeAsMuchAsPossible(new ResAmount(11, 6, 0, 2, 0, 10, 0));
 	}
 
 	private class WorldGenerator
