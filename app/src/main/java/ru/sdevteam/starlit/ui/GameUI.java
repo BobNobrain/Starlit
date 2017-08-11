@@ -3,18 +3,22 @@ package ru.sdevteam.starlit.ui;
 import ru.sdevteam.starlit.RenderView;
 import ru.sdevteam.starlit.SelectionChangedEvent;
 import ru.sdevteam.starlit.SelectionProvider;
+import ru.sdevteam.starlit.craft.buildings.IStorage;
+import ru.sdevteam.starlit.world.StorageAPIProvider;
 
 /**
  * Class holds control over the whole game ui
  */
-public final class GameUI extends CompoundComponent implements SelectionProvider
+public final class GameUI extends CompoundComponent implements
+													SelectionProvider,
+													SelectionChangedEvent.Listener
 {
 	private int buttonsSize;
 
 	private RenderView renderView;
 
 	private BuildInterface buildInterface;
-	private CompoundComponent resourcesPanel;
+	private ResourcePanel resPanel;
 	private Label status;
 
 	public GameUI(RenderView rv, int screenWidth, int screenHeight, int buttonsSize, int textSize)
@@ -25,6 +29,8 @@ public final class GameUI extends CompoundComponent implements SelectionProvider
 		setTextSize(textSize);
 		initComponents();
 		setTextSizeForAll(textSize);
+
+		rv.getSelectionChangedEvent().subscribe(this);
 	}
 
 	private void initComponents()
@@ -33,6 +39,8 @@ public final class GameUI extends CompoundComponent implements SelectionProvider
 
 		status = new Label(m, getHeight() - getTextSize() - 2*m, getWidth() - 2*m, getTextSize() + 2*m);
 		status.setFormatted(true);
+
+		resPanel = new ResourcePanel(m, m, getWidth() - 2*m, getTextSize(), m);
 
 		buildInterface = new BuildInterface(
 			this,
@@ -44,8 +52,10 @@ public final class GameUI extends CompoundComponent implements SelectionProvider
 		);
 		buildInterface.setTextSize(getTextSize());
 
+
 		appendChild(status);
 		appendChild(buildInterface);
+		appendChild(resPanel);
 	}
 
 	public void setStatusText(String text)
@@ -57,10 +67,22 @@ public final class GameUI extends CompoundComponent implements SelectionProvider
 	{
 		return renderView.getSelectedObject();
 	}
-
 	@Override
 	public SelectionChangedEvent getSelectionChangedEvent()
 	{
 		return renderView.getSelectionChangedEvent();
+	}
+
+	public ResourcePanel getResPanel() { return resPanel; }
+
+
+	@Override
+	public void onSelectionChanged(Object newSelection)
+	{
+		if (newSelection instanceof StorageAPIProvider)
+		{
+			IStorage s = ((StorageAPIProvider) newSelection).getStorageAPI();
+			resPanel.showResources(s.getTotalResourcesStored());
+		}
 	}
 }

@@ -120,4 +120,18 @@ public class ResAmount
 		}
 		return result;
 	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < this.amounts.length; i++)
+		{
+			sb.append(this.amounts[i]);
+			sb.append(ResType.values()[i].icon);
+			if (i != this.amounts.length - 1)
+				sb.append(' ');
+		}
+		return sb.toString();
+	}
 }

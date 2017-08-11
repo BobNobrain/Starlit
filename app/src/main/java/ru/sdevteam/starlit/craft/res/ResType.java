@@ -1,22 +1,24 @@
 package ru.sdevteam.starlit.craft.res;
 
 /**
- * Created by user on 11.07.2016.
+ * Resource types
  */
 public enum ResType
 {
-	METAL		(ResClass.ORE),
-	CRYSTALS	(ResClass.ORE),
-	PLUTONIUM	(ResClass.ORE),
-	FUEL		(ResClass.GAS),
-	RARE_GAS	(ResClass.GAS),
-	FOOD		(ResClass.BIO),
-	ENERGY		(ResClass.ENERGY)
+	METAL		(ResClass.ORE,		'M'),
+	CRYSTALS	(ResClass.ORE,		'C'),
+	PLUTONIUM	(ResClass.ORE,		'P'),
+	FUEL		(ResClass.GAS,		'U'),
+	RARE_GAS	(ResClass.GAS,		'R'),
+	FOOD		(ResClass.BIO,		'F'),
+	ENERGY		(ResClass.ENERGY,	'Z')
 	;
 
 	public ResClass resClass;
-	ResType(ResClass c)
+	public char icon;
+	ResType(ResClass c, char i)
 	{
 		resClass = c;
+		icon = i;
 	}
 }

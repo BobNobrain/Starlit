@@ -1,6 +1,7 @@
 package ru.sdevteam.starlit.ui;
 
 import android.graphics.Canvas;
+import android.graphics.Typeface;
 
 /**
  * Class decorates any UI component. Used for overriding all needed methods and properties
@@ -112,6 +113,11 @@ public class DecoratorComponent extends UIComponent
 	public String getText() { return decorated.getText(); }
 	@Override
 	public void setText(String val) { decorated.setText(val); }
+
+	@Override
+	public Typeface getFont() { return decorated.getFont(); }
+	@Override
+	public void setFont(Typeface font) { decorated.setFont(font); }
 
 	@Override
 	public void subscribe(EventListener l)

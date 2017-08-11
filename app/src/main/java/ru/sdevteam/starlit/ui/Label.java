@@ -68,7 +68,7 @@ public class Label extends UIComponent
 		}
 
 		Paint.FontMetricsInt fm = getMetrics();
-		int penX = getX() + padding, penY = getY() + fm.ascent + padding;
+		int penX = getX() + padding, penY = getY() - fm.ascent + padding;
 		switch (textAlign)
 		{
 			case CENTER:

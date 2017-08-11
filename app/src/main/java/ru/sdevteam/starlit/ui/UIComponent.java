@@ -3,6 +3,7 @@ package ru.sdevteam.starlit.ui;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import ru.sdevteam.starlit.utils.Drawing;
 
 import java.util.Vector;
@@ -29,6 +30,10 @@ public abstract class UIComponent
 	public String getText() { return text; }
 	public void setText(String val) { text = val; }
 
+	private Typeface font;
+	public Typeface getFont() { return font; }
+	public void setFont(Typeface font) { this.font = font; }
+
 	protected volatile int textColor, bgColor;
 
 	private static Paint textPaint;
@@ -43,6 +48,7 @@ public abstract class UIComponent
 		}
 		textPaint.setColor(textColor);
 		textPaint.setTextSize(size);
+		textPaint.setTypeface(this.font);
 		return textPaint;
 	}
 	protected Paint getTextPaint() { return getTextPaint(textSize); }
@@ -86,6 +92,7 @@ public abstract class UIComponent
 		bgColor = Color.argb(32, 255, 255, 255);
 		textSize = 20;
 		text = "";
+		font = Drawing.mainFont;
 
 		listeners = new Vector<>();
 	}

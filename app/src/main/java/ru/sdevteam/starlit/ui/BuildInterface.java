@@ -6,7 +6,6 @@ import ru.sdevteam.starlit.craft.buildings.BuildingSystem;
 import ru.sdevteam.starlit.craft.buildings.BuildingsRegistry;
 import ru.sdevteam.starlit.craft.buildings.PlanetBuildingSystem;
 import ru.sdevteam.starlit.world.BuildingSystemProvider;
-import ru.sdevteam.starlit.world.Planet;
 
 /**
  * Class represents interface that allows user build in build systems
@@ -156,10 +155,15 @@ public class BuildInterface extends CompoundComponent implements SelectionChange
 		if (state)
 		{
 			appendChild(toggleableContainer);
+			if (selectedBuilding != null)
+			{
+				root.getResPanel().showWithdraw();
+			}
 		}
 		else
 		{
 			removeChild(toggleableContainer);
+			root.getResPanel().hideWithdraw();
 		}
 	}
 
@@ -173,11 +177,14 @@ public class BuildInterface extends CompoundComponent implements SelectionChange
 			{
 				buildGButton.setEnabled(bs.getGround().canBuild(b) == BuildingSystem.BuildFailedReason.NONE);
 				buildOButton.setEnabled(bs.getOrbit().canBuild(b) == BuildingSystem.BuildFailedReason.NONE);
+
+				root.getResPanel().showWithdraw(bs.getTotalResourcesStored());
 			}
 			else
 			{
 				buildGButton.setEnabled(false);
 				buildOButton.setEnabled(false);
+				root.getResPanel().hideWithdraw();
 			}
 		}
 		else
@@ -185,6 +192,7 @@ public class BuildInterface extends CompoundComponent implements SelectionChange
 			buildingDescription.setText("Select a building");
 			buildGButton.setEnabled(false);
 			buildOButton.setEnabled(false);
+			root.getResPanel().hideWithdraw();
 		}
 		selectedBuilding = b;
 	}

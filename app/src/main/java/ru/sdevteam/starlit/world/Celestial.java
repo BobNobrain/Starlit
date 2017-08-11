@@ -1,6 +1,7 @@
 package ru.sdevteam.starlit.world;
 
 import ru.sdevteam.starlit.craft.buildings.BuildingSystem;
+import ru.sdevteam.starlit.craft.buildings.IStorage;
 import ru.sdevteam.starlit.craft.buildings.PlanetBuildingSystem;
 import ru.sdevteam.starlit.craft.res.ResAvailability;
 import ru.sdevteam.starlit.craft.res.ResClass;
@@ -11,7 +12,9 @@ import ru.sdevteam.starlit.utils.MathUtils;
 /**
  * A celestial body in the world. Can have satellites and is a key object of game process
  */
-public abstract class Celestial implements BuildingSystemProvider
+public abstract class Celestial implements
+								BuildingSystemProvider,
+								StorageAPIProvider
 {
 	protected float getOrbitSpeedCoeff() { return 500; }
 
@@ -59,11 +62,14 @@ public abstract class Celestial implements BuildingSystemProvider
 	}
 
 	protected PlanetBuildingSystem buildings;
+	@Override
 	public PlanetBuildingSystem getBuildingSystem()
 	{
 		return buildings;
 	}
 
+	@Override
+	public IStorage getStorageAPI() { return buildings; }
 
 	public Fraction owner;
 
