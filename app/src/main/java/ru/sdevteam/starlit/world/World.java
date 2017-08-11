@@ -1,19 +1,28 @@
 package ru.sdevteam.starlit.world;
 
+import ru.sdevteam.starlit.craft.buildings.BuildingsRegistry;
+import ru.sdevteam.starlit.craft.buildings.PlanetBuildingSystem;
+import ru.sdevteam.starlit.craft.res.ResAmount;
+import ru.sdevteam.starlit.craft.res.ResClass;
+import ru.sdevteam.starlit.fractions.Fraction;
+
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Vector;
 
 /**
- * Created by user on 23.06.2016.
+ * Class stores all world data
  */
 public class World
 {
 	public static final int ORIGIN_X = 0, ORIGIN_Y = 0;
+	private static final int MIN_PLANETS_IN_HOME_SYSTEM = 4;
 	private Vector<Sector> activeSectors;
 	private Sector currentSector; // needed?
 	private WorldGenerator generator;
 	private long startTime, timeOffset;
+	private Star homeStar;
+	private Planet homePlanet;
 
 
 	public World(long seed)
@@ -24,6 +33,8 @@ public class World
 		currentSector = generator.generateSector(0, 0);
 		activeSectors.add(currentSector);
 		currentSector.setName("Home sector");
+
+		createHomePlanet(currentSector);
 
 		startTime = System.currentTimeMillis();
 		timeOffset = 0; // while not loading from file
@@ -39,15 +50,6 @@ public class World
 	{
 		// assuming that max. 4 sectors are visible (coz image is scaling so inside renderview)
 		Sector base = getOrGenerateSectorContaining(viewportX, viewportY);
-
-		/*Sector right = base.atRight();
-		if(right == null) right = generator.generateSector(base.getX()+1, base.getY());
-
-		Sector bottom = base.atBottom();
-		if(bottom == null) bottom = generator.generateSector(base.getX(), base.getY()+1);
-
-		Sector bottomRight = right.atBottom();
-		if(bottomRight == null) bottomRight = generator.generateSector(base.getX()+1, base.getY()+1);*/
 
 		ensureRight(base);
 		ensureBottom(base);
@@ -106,6 +108,77 @@ public class World
 	private Sector loadSector(int sectorX, int sectorY)
 	{
 		return null;
+	}
+
+	private void createHomePlanet(Sector in)
+	{
+		homeStar = null;
+		homePlanet = null;
+
+		// trying to find suitable star
+		for (Star s: in.getStarsArray())
+		{
+			if (s == null) continue;
+			if (s.getOrbit().length >= MIN_PLANETS_IN_HOME_SYSTEM && s.getAvailableResources().isAvailable(ResClass.BIO))
+			{
+				homeStar = s;
+				break;
+			}
+		}
+		// failed it, generate a brand new one
+		if (homeStar == null)
+		{
+			homeStar = in.getStarsArray()[0];
+			homeStar.changeName("Home Star G");
+			if (homeStar.getOrbit().length < MIN_PLANETS_IN_HOME_SYSTEM)
+			{
+				homeStar.initOrbit(MIN_PLANETS_IN_HOME_SYSTEM);
+				int[] distances = generator.generateDistances(MIN_PLANETS_IN_HOME_SYSTEM);
+				for(int i = 0; i < MIN_PLANETS_IN_HOME_SYSTEM; i++)
+				{
+					Planet planet = generator.generatePlanet(homeStar, i, distances[i]);
+					homeStar.placeOnOrbit(i, distances[i], planet, generator.r.nextFloat() > 0.9F);
+				}
+			}
+		}
+		else
+			homeStar.changeName("Home Star");
+
+		// trying to find a suitable planet
+		for (Celestial c: homeStar.getOrbit())
+		{
+			if (c instanceof Planet)
+			{
+				Planet p = (Planet) c;
+				if (p.getAvailableResources().isAvailable(ResClass.BIO))
+				{
+					homePlanet = p;
+					break;
+				}
+			}
+		}
+		// failed it, no problem, let's create our own
+		if (homePlanet == null)
+		{
+			int dist = homeStar.getOrbitDistances()[2];
+			do
+			{
+				homePlanet = generator.generatePlanet(homeStar, 2, dist);
+			}
+			while (!homePlanet.getAvailableResources().isAvailable(ResClass.BIO));
+			homeStar.placeOnOrbit(2, dist, homePlanet, false);
+			homePlanet.changeName("Home Planet G");
+		}
+		else
+			homePlanet.changeName("Home Planet");
+	}
+
+	private void conquerHomePlanet()
+	{
+		homePlanet.owner = Fraction.PLAYER;
+		PlanetBuildingSystem bs = homePlanet.getBuildingSystem();
+		bs.forceBuild(BuildingsRegistry.forId("b.government"));
+		bs.storeAsMuchAsPossible(new ResAmount(10, 5, 0, 2, 0, 10, 0));
 	}
 
 	private class WorldGenerator

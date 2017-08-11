@@ -47,10 +47,17 @@ public class BuildingSystem implements IStorage
 	{
 		if (canBuild(b) == BuildFailedReason.NONE)
 		{
-			int index = getFreeIndex();
-			buildings[index] = b;
-			b.appendToSystem(this);
+			forceBuild(b);
 		}
+	}
+
+	public void forceBuild(Building b) throws RuntimeException
+	{
+		int index = getFreeIndex();
+		if (index == NO_FREE_SPACE)
+			throw new RuntimeException("Cannot force build when there is no space!");
+		buildings[index] = b;
+		b.appendToSystem(this);
 	}
 
 	private int getFreeIndex()

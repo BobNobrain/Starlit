@@ -11,6 +11,8 @@ public class Fraction
 	public String name;
 	public int color;
 
+	public static final Fraction PLAYER = new Fraction("Player", 0xFF00FF00);
+
 	private TechTree techTree;
 
 	public Fraction(String name, int color)

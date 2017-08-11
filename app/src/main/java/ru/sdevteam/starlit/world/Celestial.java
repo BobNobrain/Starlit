@@ -5,6 +5,7 @@ import ru.sdevteam.starlit.craft.buildings.PlanetBuildingSystem;
 import ru.sdevteam.starlit.craft.res.ResAvailability;
 import ru.sdevteam.starlit.craft.res.ResClass;
 import ru.sdevteam.starlit.craft.res.ResType;
+import ru.sdevteam.starlit.fractions.Fraction;
 import ru.sdevteam.starlit.utils.MathUtils;
 
 /**
@@ -62,6 +63,9 @@ public abstract class Celestial implements BuildingSystemProvider
 	{
 		return buildings;
 	}
+
+
+	public Fraction owner;
 
 
 	public Celestial(Sector location, int sx, int sy, String name)

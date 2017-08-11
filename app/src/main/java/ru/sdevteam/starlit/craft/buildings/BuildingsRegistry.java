@@ -52,14 +52,14 @@ public class BuildingsRegistry
 			return null;
 		}
 	}
-	public static Building forName(String name)
+	public static Building forId(String id)
 	{
 		for (int i = 0; i < registry.length(); i++)
 		{
 			try
 			{
 				JSONObject b = registry.getJSONObject(i);
-				if (b.getString("name").equals(name))
+				if (b.getString("id").equals(id))
 					return createFromJSONData(b);
 			}
 			catch (Exception ex)
