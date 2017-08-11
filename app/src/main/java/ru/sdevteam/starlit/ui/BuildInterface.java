@@ -109,6 +109,7 @@ public class BuildInterface extends CompoundComponent implements SelectionChange
 			h,
 			"Build at ground"
 		);
+		buildGButton.subscribe(onBuildGTap);
 		buildOButton = new Button(
 			buildGButton.getX() + buildGButton.getWidth(),
 			buildGButton.getY(),
@@ -116,6 +117,7 @@ public class BuildInterface extends CompoundComponent implements SelectionChange
 			h,
 			"Build at orbit"
 		);
+		buildOButton.subscribe(onBuildOTap);
 		buildingDescription = new Label(
 			infoPanel.getX(),
 			infoPanel.getY(),
@@ -245,6 +247,28 @@ public class BuildInterface extends CompoundComponent implements SelectionChange
 		return result;
 	}
 
+	private void updateBuildingCheckboxesColors(PlanetBuildingSystem bs)
+	{
+		for (UIComponent uic: buildings.getChildren())
+		{
+			if (uic instanceof BuildingCheckbox)
+			{
+				if (bs == null)
+				{
+					((BuildingCheckbox) uic).defineColor(null, null);
+				}
+				else
+				{
+					BuildingCheckbox bc = (BuildingCheckbox) uic;
+					bc.defineColor(
+						bs.getGround().canBuild(bc.getBuilding()),
+						bs.getOrbit().canBuild(bc.getBuilding())
+					);
+				}
+			}
+		}
+	}
+
 	private CheckboxGroup.StateChangedListener onCategorySelected = new CheckboxGroup.StateChangedListener()
 	{
 		@Override
@@ -261,6 +285,38 @@ public class BuildInterface extends CompoundComponent implements SelectionChange
 			}
 		}
 	};
+
+	private Button.EventListener onBuildGTap = new EventListenerAdapter()
+	{
+		@Override
+		public boolean onTap(int tapX, int tapY)
+		{
+			super.onTap(tapX, tapY);
+			buildSelectedBuilding(false);
+			return true;
+		}
+	};
+	private Button.EventListener onBuildOTap = new EventListenerAdapter()
+	{
+		@Override
+		public boolean onTap(int tapX, int tapY)
+		{
+			super.onTap(tapX, tapY);
+			buildSelectedBuilding(true);
+			return true;
+		}
+	};
+	private void buildSelectedBuilding(boolean atOrbit)
+	{
+		PlanetBuildingSystem bs = obtainBuildingSystem();
+		if (bs != null && selectedBuilding != null)
+		{
+			BuildingSystem target = atOrbit? bs.getOrbit() : bs.getGround();
+			target.build(BuildingsRegistry.forId(selectedBuilding.getId()));
+//			root.updateResPanel();
+			updateBuildingCheckboxesColors(bs);
+		}
+	}
 
 	@Override
 	public void onSelectionChanged(Object newSelection)
