@@ -32,6 +32,14 @@ public class ResAmount
 			amounts[i] = values[i];
 		}
 	}
+	public ResAmount(ResAmount source)
+	{
+		this(0);
+		for (int i = 0; i < amounts.length; i++)
+		{
+			amounts[i] = source.amounts[i];
+		}
+	}
 
 	public int getAmountOf(ResType rt)
 	{
@@ -54,6 +62,11 @@ public class ResAmount
 		amounts[rt.ordinal()] = amount;
 	}
 
+	public void addAmountOf(ResType rt, int addition)
+	{
+		amounts[rt.ordinal()] += addition;
+	}
+
 	public void increaseBy(ResAmount res)
 	{
 		for (int i = 0; i < amounts.length; i++)
@@ -67,7 +80,7 @@ public class ResAmount
 
 		for (int i = 0; i < amounts.length; i++)
 		{
-			amounts[i] += res.amounts[i];
+			amounts[i] -= res.amounts[i];
 		}
 		return true;
 	}
@@ -85,6 +98,15 @@ public class ResAmount
 		for (int i = 0; i < amounts.length; i++)
 		{
 			if(amounts[i] < res.amounts[i]) return false;
+		}
+		return true;
+	}
+
+	public boolean isEmpty()
+	{
+		for (int i = 0; i < amounts.length; i++)
+		{
+			if (amounts[i] != 0) return false;
 		}
 		return true;
 	}

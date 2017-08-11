@@ -11,7 +11,7 @@ import java.util.EnumSet;
 /**
  * Class represents Storage building that can store resources
  */
-public class Storage extends Building
+public class Storage extends Building implements IStorage
 {
 	protected StorageLimit limit;
 	protected ResAmount stored;
@@ -46,5 +46,72 @@ public class Storage extends Building
 	public Type getType()
 	{
 		return Type.STORAGE;
+	}
+
+	@Override
+	public ResAmount getTotalResourcesStored()
+	{
+		return stored;
+	}
+
+	@Override
+	public StorageLimit getStorageLimit()
+	{
+		return limit;
+	}
+
+	@Override
+	public ResAmount storeAsMuchAsPossible(ResAmount amount)
+	{
+		ResAmount remainder = new ResAmount();
+		StorageLimit storedAsLimit = new StorageLimit(stored);
+		for (ResType rt: ResType.values())
+		{
+			int free = limit.getLimitFor(rt.resClass) - storedAsLimit.getLimitFor(rt.resClass);
+			int given = amount.getAmountOf(rt);
+			if (given > free)
+			{
+				stored.addAmountOf(rt, free);
+				remainder.setAmountOf(rt, given - free);
+			}
+			else
+			{
+				stored.addAmountOf(rt, given);
+			}
+		}
+		return remainder;
+	}
+
+	@Override
+	public boolean withdraw(ResAmount amount)
+	{
+		if (stored.isGreaterOrEqualThan(amount))
+		{
+			stored.decreaseBy(amount);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public ResAmount withdrawAsMuchAsPossible(ResAmount amount)
+	{
+		ResAmount withdrawn = new ResAmount();
+		for (ResType rt: ResType.values())
+		{
+			int asked = amount.getAmountOf(rt);
+			int has = stored.getAmountOf(rt);
+			if (asked > has)
+			{
+				stored.setAmountOf(rt, 0);
+				withdrawn.setAmountOf(rt, has);
+			}
+			else
+			{
+				stored.addAmountOf(rt, -asked);
+				withdrawn.setAmountOf(rt, asked);
+			}
+		}
+		return withdrawn;
 	}
 }

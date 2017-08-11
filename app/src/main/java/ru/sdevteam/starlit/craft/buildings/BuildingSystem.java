@@ -6,7 +6,7 @@ import ru.sdevteam.starlit.craft.res.StorageLimit;
 /**
  * Class represents place where buildings can be built
  */
-public class BuildingSystem
+public class BuildingSystem implements IStorage
 {
 	private static final int NO_FREE_SPACE = -1;
 
@@ -64,8 +64,15 @@ public class BuildingSystem
 
 	public ResAmount getTotalResourcesStored()
 	{
-		// TODO:
-		return new ResAmount(10);
+		ResAmount stored = new ResAmount();
+		for (Building b: buildings)
+		{
+			if (b instanceof IStorage)
+			{
+				stored.increaseBy(((IStorage) b).getTotalResourcesStored());
+			}
+		}
+		return stored;
 	}
 
 	/**
@@ -74,8 +81,15 @@ public class BuildingSystem
 	 */
 	public StorageLimit getStorageLimit()
 	{
-		// TODO:
-		return new StorageLimit();
+		StorageLimit limit = new StorageLimit();
+		for (Building b: buildings)
+		{
+			if (b instanceof IStorage)
+			{
+				limit.increaseBy(((IStorage) b).getStorageLimit());
+			}
+		}
+		return limit;
 	}
 
 	/**
@@ -86,8 +100,16 @@ public class BuildingSystem
 	 */
 	public ResAmount storeAsMuchAsPossible(ResAmount resources)
 	{
-		// TODO:
-		return new ResAmount();
+		for (Building b: buildings)
+		{
+			if (b instanceof IStorage)
+			{
+				IStorage s = (IStorage) b;
+				resources = s.storeAsMuchAsPossible(resources);
+				if (resources.isEmpty()) break;
+			}
+		}
+		return resources;
 	}
 
 	/**
@@ -98,8 +120,13 @@ public class BuildingSystem
 	 */
 	public boolean withdraw(ResAmount resources)
 	{
-		// TODO:
-		return true;
+		ResAmount total = getTotalResourcesStored();
+		if (total.isGreaterOrEqualThan(resources))
+		{
+			withdrawAsMuchAsPossible(resources);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -110,7 +137,18 @@ public class BuildingSystem
 	 */
 	public ResAmount withdrawAsMuchAsPossible(ResAmount resources)
 	{
-		// TODO:
+		ResAmount withdrawnTotal = new ResAmount();
+		for (Building b: buildings)
+		{
+			if (b instanceof IStorage)
+			{
+				IStorage s = (IStorage) b;
+				ResAmount withdrawnFromS = s.withdrawAsMuchAsPossible(resources);
+				withdrawnTotal.increaseBy(withdrawnFromS);
+				resources.decreaseBy(withdrawnFromS);
+				if (resources.isEmpty()) break;
+			}
+		}
 		return resources;
 	}
 

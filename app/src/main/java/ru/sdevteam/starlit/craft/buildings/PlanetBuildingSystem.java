@@ -72,8 +72,10 @@ public class PlanetBuildingSystem extends BuildingSystem
 		ResAmount r = getTotalResourcesStored();
 		if (r.isGreaterOrEqualThan(resources))
 		{
-			ResAmount res = ground.withdrawAsMuchAsPossible(resources);
-			orbit.withdraw(res);
+			ResAmount withdrawn = ground.withdrawAsMuchAsPossible(resources);
+			resources.decreaseBy(withdrawn);
+			// calling withdrawAsMuch... should be faster in this case
+			orbit.withdrawAsMuchAsPossible(resources);
 			return true;
 		}
 		else
@@ -85,8 +87,10 @@ public class PlanetBuildingSystem extends BuildingSystem
 	@Override
 	public ResAmount withdrawAsMuchAsPossible(ResAmount resources)
 	{
-		ResAmount r = ground.withdrawAsMuchAsPossible(resources);
-		return orbit.withdrawAsMuchAsPossible(r);
+		ResAmount withdrawn = ground.withdrawAsMuchAsPossible(resources);
+		resources.decreaseBy(withdrawn);
+		withdrawn.increaseBy(orbit.withdrawAsMuchAsPossible(resources));
+		return withdrawn;
 	}
 
 	@Override

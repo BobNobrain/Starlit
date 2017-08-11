@@ -13,6 +13,9 @@ import java.util.EnumSet;
  */
 public class Building
 {
+	protected String id;
+	public String getId() { return id; }
+
 	protected String name;
 	public String getName() { return name; }
 
@@ -61,6 +64,7 @@ public class Building
 
 	public Building(JSONObject params) throws JSONException
 	{
+		id = params.getString("id");
 		name = params.getString("name");
 		timeToBuild = params.getInt("time");
 		populationNeeded = params.getInt("population");

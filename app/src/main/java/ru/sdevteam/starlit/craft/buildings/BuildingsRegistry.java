@@ -34,7 +34,7 @@ public class BuildingsRegistry
 	{
 		try
 		{
-			Class bc = Class.forName("ru.sdevteam." + data.getString("class"));
+			Class bc = Class.forName(data.getString("class"));
 			if (Building.class.isAssignableFrom(bc))
 			{
 				Constructor c = bc.getConstructor(JSONObject.class);

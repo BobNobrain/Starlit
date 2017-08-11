@@ -41,7 +41,7 @@
     "population": 10,
     "time": 5000,
     "place": ["GROUND", "PLANET_ORBIT", "STAR_ORBIT"],
-    "science": [ "s.c.materials:1" ]
+    "science": [ "s.c.materials:1" ],
     "class": "ru.sdevteam.starlit.craft.buildings.Storage",
     "storage_limit": [125, 65, 150, 200]
   },
