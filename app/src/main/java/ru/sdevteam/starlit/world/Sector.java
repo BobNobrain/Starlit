@@ -1,7 +1,7 @@
 package ru.sdevteam.starlit.world;
 
 /**
- * Created by user on 23.06.2016.
+ * Sector is a square area of space with all star systems located within
  */
 public class Sector
 {
@@ -56,5 +56,16 @@ public class Sector
 	public void save()
 	{
 
+	}
+
+	public void update()
+	{
+		for (Star s: stars)
+		{
+			if (s != null)
+			{
+				s.update();
+			}
+		}
 	}
 }

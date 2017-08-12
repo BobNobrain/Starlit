@@ -125,9 +125,9 @@ public class CompoundComponent extends UIComponent
 	public void update()
 	{
 		super.update();
-		for (int i = 0; i < children.size(); i++)
+		for (UIComponent c : children)
 		{
-			children.get(i).update();
+			c.update();
 		}
 	}
 }

@@ -34,14 +34,14 @@ public class BuildingCheckbox extends Checkbox
 			setTextColor(255, 32, 255, 64);
 			return;
 		}
-		if (ground == BuildingSystem.BuildFailedReason.NOT_ENOUGH_RESOURCES ||
-			orbit == BuildingSystem.BuildFailedReason.NOT_ENOUGH_RESOURCES)
+		if (ground == BuildingSystem.BuildFailedReason.NOT_ENOUGH_PLACE ||
+			orbit == BuildingSystem.BuildFailedReason.NOT_ENOUGH_PLACE)
 		{
-			setBackgroundColor(32, 255, 64, 32);
-			setTextColor(255, 255, 64, 32);
+			setBackgroundColor(32, 128, 128, 128);
+			setTextColor(255, 128, 128, 128);
 			return;
 		}
-		setBackgroundColor(32, 128, 128, 128);
-		setTextColor(255, 128, 128, 128);
+		setBackgroundColor(32, 255, 64, 32);
+		setTextColor(255, 255, 64, 32);
 	}
 }

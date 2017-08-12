@@ -53,6 +53,9 @@ public class RenderView extends SurfaceView implements
 	private SelectionChangedEvent selectionChanged;
 
 
+	private final Object mutex = new Object();
+
+
 	public RenderView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
@@ -101,11 +104,12 @@ public class RenderView extends SurfaceView implements
 	{
 		if(currentDisplay!=null)
 		{
-			synchronized (currentDisplay)
+			synchronized (mutex)
 			{
+				currentWorld.update();
 				currentDisplay.update();
+				componentsRoot.update();
 			}
-			componentsRoot.update();
 		}
 	}
 
@@ -113,15 +117,14 @@ public class RenderView extends SurfaceView implements
 	{
 		if(currentDisplay == null) return;
 
-		synchronized (currentDisplay)
+		synchronized (mutex)
 		{
 			currentDisplay.drawContent(bufferCanvas);
+			p.setStyle(Paint.Style.FILL);
+
+			// all components lay above the display
+			componentsRoot.paint(bufferCanvas);
 		}
-
-		p.setStyle(Paint.Style.FILL);
-
-		// all components lay above the display
-		componentsRoot.paint(bufferCanvas);
 
 		Canvas screenCanvas = null;
 		try
@@ -279,7 +282,7 @@ public class RenderView extends SurfaceView implements
 	{
 		if(!componentsRoot.invokeOnTap((int)ev.getX(), (int)ev.getY()))
 		{
-			synchronized (currentDisplay)
+			synchronized (mutex)
 			{
 				currentDisplay.selectObjectUnder(ev.getX(), ev.getY());
 			}
@@ -292,7 +295,7 @@ public class RenderView extends SurfaceView implements
 	{
 		if(!componentsRoot.invokeOnScroll((int) ev1.getX(), (int) ev1.getY(), (int) dx, (int) dy))
 		{
-			synchronized (currentDisplay)
+			synchronized (mutex)
 			{
 				currentDisplay.moveViewportBy(dx, dy);
 			}
@@ -324,7 +327,7 @@ public class RenderView extends SurfaceView implements
 		// TODO: add transitions
 		if(!componentsRoot.invokeOnDoubleTap((int)ev.getX(), (int)ev.getY()))
 		{
-			synchronized (currentDisplay)
+			synchronized (mutex)
 			{
 				AbstractDisplay d = currentDisplay.displayObjectUnder(ev.getX(), ev.getY());
 				if (d != null)

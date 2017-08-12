@@ -113,27 +113,33 @@ public abstract class Celestial implements
 	protected long lastTimeUpdated = 0;
 	public void update()
 	{
-		if(orbit == null) return;
 		long time = getWorldTimeMillis();
 		long dt = time - lastTimeUpdated;
-		for(int i=0; i<orbit.length; i++)
+		if(orbit != null)
 		{
-			Celestial sat = orbit[i];
-			float speed = orbitSpeeds[i];
-			int R = orbitDistances[i];
-			//float angle = sat.orbitalAngle;
+			for (int i = 0; i < orbit.length; i++)
+			{
+				Celestial sat = orbit[i];
+				float speed = orbitSpeeds[i];
+				int R = orbitDistances[i];
+				//float angle = sat.orbitalAngle;
 
-			sat.orbitalAngle += speed*dt;
-			while(sat.orbitalAngle > MathUtils.F_2PI)
-				sat.orbitalAngle -= MathUtils.F_2PI;
-			while(sat.orbitalAngle < 0)
-				sat.orbitalAngle += MathUtils.F_2PI;
+				sat.orbitalAngle += speed * dt;
+				while (sat.orbitalAngle > MathUtils.F_2PI)
+					sat.orbitalAngle -= MathUtils.F_2PI;
+				while (sat.orbitalAngle < 0)
+					sat.orbitalAngle += MathUtils.F_2PI;
 
-			sat.relX = (int)(R*Math.cos(sat.orbitalAngle));
-			sat.relY = (int)(R*Math.sin(sat.orbitalAngle));
+				sat.relX = (int) (R * Math.cos(sat.orbitalAngle));
+				sat.relY = (int) (R * Math.sin(sat.orbitalAngle));
 
-			sat.update();
+				sat.update();
+			}
 		}
+
+		if (buildings != null)
+			buildings.update(time);
+
 		lastTimeUpdated = time;
 	}
 

@@ -73,16 +73,32 @@ public final class GameUI extends CompoundComponent implements
 		return renderView.getSelectionChangedEvent();
 	}
 
+	private IStorage s;
 	public ResourcePanel getResPanel() { return resPanel; }
+	public void updateResPanel()
+	{
+		if (s != null)
+			resPanel.showResources(s.getTotalResourcesStored());
+	}
 
+	@Override
+	public void update()
+	{
+		updateResPanel();
+		super.update();
+	}
 
 	@Override
 	public void onSelectionChanged(Object newSelection)
 	{
 		if (newSelection instanceof StorageAPIProvider)
 		{
-			IStorage s = ((StorageAPIProvider) newSelection).getStorageAPI();
-			resPanel.showResources(s.getTotalResourcesStored());
+			s = ((StorageAPIProvider) newSelection).getStorageAPI();
+//			updateResPanel();
+		}
+		else
+		{
+			s = null;
 		}
 	}
 }

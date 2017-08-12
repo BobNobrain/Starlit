@@ -147,7 +147,7 @@ public class StarDisplay extends AbstractDisplay
 	public void update()
 	{
 		super.update();
-		star.update();
+//		star.update();
 	}
 
 	@Override

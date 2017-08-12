@@ -47,6 +47,7 @@ public class BuildingSystem implements IStorage
 	{
 		if (canBuild(b) == BuildFailedReason.NONE)
 		{
+			withdraw(b.price);
 			forceBuild(b);
 		}
 	}
@@ -159,21 +160,19 @@ public class BuildingSystem implements IStorage
 		return resources;
 	}
 
-	private long lastTimeUpdated;
+	private int lastTimeUpdatedSeconds = 0; // TODO: save this field when serializing!
 	public void update(long worldTime)
 	{
-		long dt = worldTime - lastTimeUpdated;
-		int seconds = (int)(dt/1000);
+		int seconds = (int)(worldTime/1000);
 
 		for(int i = 0; i < buildings.length; i++)
 		{
 			if(buildings[i] != null)
 			{
-				buildings[i].update(worldTime, seconds);
+				buildings[i].update(worldTime, seconds - lastTimeUpdatedSeconds);
 			}
 		}
-
-		lastTimeUpdated = worldTime;
+		lastTimeUpdatedSeconds = seconds;
 	}
 
 

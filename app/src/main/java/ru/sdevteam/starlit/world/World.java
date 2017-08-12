@@ -44,7 +44,13 @@ public class World
 
 	public void update()
 	{
-
+		for (Sector s: activeSectors)
+		{
+			if (s != null)
+			{
+				s.update();
+			}
+		}
 	}
 
 	public Sector[] getVisibleSectors(int viewportX, int viewportY)
