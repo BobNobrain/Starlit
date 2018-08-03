@@ -4,54 +4,38 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import ru.sdevteam.starlit.ui.BuildInterface;
-import ru.sdevteam.starlit.ui.CompoundComponent;
-import ru.sdevteam.starlit.ui.DynamicFoneComponent;
-import ru.sdevteam.starlit.ui.GameUI;
-import ru.sdevteam.starlit.world.World;
+
+import ru.sdevteam.starlit.core.DragEvent;
+import ru.sdevteam.starlit.core.Scene;
+import ru.sdevteam.starlit.core.SceneManager;
+import ru.sdevteam.starlit.core.TapEvent;
 
 /**
  * Created by user on 23.06.2016.
  */
-public class RenderView extends SurfaceView implements
-											SurfaceHolder.Callback,
-											GestureDetector.OnGestureListener,
-											GestureDetector.OnDoubleTapListener,
-
-											SelectionProvider,
-											SelectionChangedEvent.Listener
+public class RenderView
+        extends SurfaceView
+        implements
+            SurfaceHolder.Callback,
+            GestureDetector.OnGestureListener,
+            GestureDetector.OnDoubleTapListener,
+            SceneManager.SceneChangedListener,
+            DragGestureDetector.DragGestureListener
 {
-	public static final float MIN_DRAG_DIST = 5F;
-	private Paint p;
-
 	private Bitmap buffer;
 	private Canvas bufferCanvas;
 	private SurfaceHolder holder;
-
 	private GestureDetector gd;
+	private DragGestureDetector dragGd;
 
 	private int realWidth, realHeight;
-	private int panelWidth;
-	private int textSize;
 
 	private Timer paintTimer, updateTimer, fpsTimer;
-
-	private AbstractDisplay currentDisplay;
-	private SectorsDisplay sectorsDisplay;
-	// TODO: private StarDisplay lastStarDisplay; ??
-
-	private GameUI componentsRoot;
-
-	private World currentWorld;
-
-	private SelectionChangedEvent selectionChanged;
-
 
 	private final Object mutex = new Object();
 
@@ -66,27 +50,24 @@ public class RenderView extends SurfaceView implements
 		gd = new GestureDetector(context, this);
 		gd.setOnDoubleTapListener(this);
 
-		currentWorld = new World(1);
-
-		selectionChanged = new SelectionChangedEvent();
+		dragGd = new DragGestureDetector(this);
 	}
 
-	private void initSizes()
-	{
+    @Override
+    public void onSceneChanged(Scene newScene, Scene oldScene) {
+        newScene.width = realWidth;
+        newScene.height = realHeight;
+    }
+
+    private void initSizes() {
 		realWidth = getWidth();
 		realHeight = getHeight();
 
-		// TODO: define this magic values in more magical way
-		panelWidth = realWidth / 10;
-		textSize = realWidth / 40;
-		componentsRoot = new GameUI(this, realWidth, realHeight, panelWidth, textSize);
-
-		if(currentDisplay == null)
-		{
-			sectorsDisplay = new SectorsDisplay(currentWorld, realWidth, realHeight, componentsRoot);
-			currentDisplay = sectorsDisplay;
-			sectorsDisplay.getSelectionChangedEvent().subscribe(this);
-		}
+        Scene activeScene = SceneManager.getActiveScene();
+		if (activeScene != null) {
+            activeScene.width = realWidth;
+            activeScene.height = realHeight;
+        }
 
 		buffer = Bitmap.createBitmap(realWidth, realHeight, Bitmap.Config.ARGB_8888);
 		bufferCanvas = new Canvas(buffer);
@@ -94,124 +75,72 @@ public class RenderView extends SurfaceView implements
 
 	}
 
-	private void initPaints()
-	{
-		p = new Paint();
-		p.setColor(Color.rgb(33, 155, 200));
+	private void update(long dtMillis) {
+	    float dtS = dtMillis / 1000F;
+        synchronized (mutex) {
+            Scene activeScene = SceneManager.getActiveScene();
+            if (activeScene != null) activeScene.update(dtS);
+        }
 	}
 
-	private void update()
-	{
-		if(currentDisplay!=null)
-		{
-			synchronized (mutex)
-			{
-				currentWorld.update();
-				currentDisplay.update();
-				componentsRoot.update();
-			}
-		}
-	}
-
-	private void paint()
-	{
-		if(currentDisplay == null) return;
-
-		synchronized (mutex)
-		{
-			currentDisplay.drawContent(bufferCanvas);
-			p.setStyle(Paint.Style.FILL);
-
-			// all components lay above the display
-			componentsRoot.paint(bufferCanvas);
+	private void paint() {
+        synchronized (mutex) {
+            Scene activeScene = SceneManager.getActiveScene();
+            if(activeScene == null) return;
+            activeScene.paint(bufferCanvas);
 		}
 
 		Canvas screenCanvas = null;
-		try
-		{
+		try {
 			screenCanvas = holder.lockCanvas();
 			synchronized (holder)
 			{
 				screenCanvas.drawBitmap(buffer, 0, 0, null);
 			}
 		}
-		finally
-		{
+		finally {
 			if(screenCanvas != null)
 				holder.unlockCanvasAndPost(screenCanvas);
 		}
 	}
 
-	public Object getSelectedObject()
-	{
-		if (currentDisplay != null)
-			return currentDisplay.getSelectedObject();
-		return null;
-	}
+	//
+    // SURFACE HOLDER
+    //
 
 	@Override
-	public SelectionChangedEvent getSelectionChangedEvent()
-	{
-		return selectionChanged;
-	}
-
-	@Override
-	public void onSelectionChanged(Object newSelection)
-	{
-		selectionChanged.invoke(newSelection);
-	}
-
-	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh)
-	{
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 
 		initSizes();
-		initPaints();
 	}
 
-
 	@Override
-	public boolean onTouchEvent(MotionEvent event)
-	{
-		super.onTouchEvent(event);
-		gd.onTouchEvent(event);
-		return true;
-	}
-
-
-	@Override
-	public void surfaceCreated(SurfaceHolder surfaceHolder)
-	{
-		paintTimer = new Timer("Paint", new Timer.Listener()
-		{
+	public void surfaceCreated(SurfaceHolder surfaceHolder) {
+		paintTimer = new Timer("Paint", new Timer.Listener() {
 			@Override
-			public void onTick()
+			public void onTick(long dt)
 			{
 				paint();
 			}
 		}, 33);
 		paintTimer.enableStats();
 
-		updateTimer = new Timer("Update", new Timer.Listener()
-		{
+		updateTimer = new Timer("Update", new Timer.Listener() {
 			@Override
-			public void onTick()
-			{
-				update();
+			public void onTick(long dt) {
+				update(dt);
 			}
 		}, 20);
 		updateTimer.enableStats();
 
-		fpsTimer = new Timer("FPS debug meter", new Timer.Listener()
-		{
+		fpsTimer = new Timer("FPS debug meter", new Timer.Listener() {
 			@Override
-			public void onTick()
-			{
+			public void onTick(long dt) {
 				int paFps = updateTimer.getMeanFrameDelay();
-				System.out.println("Paint fps: " + (paFps==0? "inf" : 1000/paFps));
+				System.out.println("Paint fps: " + (paFps == 0? "inf" : 1000 / paFps));
 				int upFps = updateTimer.getMeanFrameDelay();
-				System.out.println("Update fps: " + (upFps==0? "inf" : 1000/upFps));
+				System.out.println("Update fps: " + (upFps == 0? "inf" : 1000 / upFps));
 			}
 		}, 2000);
 
@@ -221,135 +150,104 @@ public class RenderView extends SurfaceView implements
 	}
 
 	@Override
-	public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2)
-	{
-
-	}
+	public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {}
 
 	@Override
-	public void surfaceDestroyed(SurfaceHolder surfaceHolder)
-	{
+	public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
 		paintTimer.stop();
 		updateTimer.stop();
 		fpsTimer.stop();
 
-		boolean retry = true;
-		while(retry)
-		{
-			try
-			{
-				paintTimer.getThread().join();
-				retry = false;
-			}
-			catch (InterruptedException ex) {}
-		}
-		retry = true;
-		while(retry)
-		{
-			try
-			{
-				updateTimer.getThread().join();
-				retry = false;
-			}
-			catch (InterruptedException ex) {}
-		}
-		retry = true;
-		while(retry)
-		{
-			try
-			{
-				fpsTimer.getThread().join();
-				retry = false;
-			}
-			catch (InterruptedException ex) {}
-		}
+		paintTimer.surelyJoin();
+		updateTimer.surelyJoin();
+		fpsTimer.surelyJoin();
 	}
 
-	@Override
-	public boolean onDown(MotionEvent motionEvent)
-	{
-		return false;
-	}
+	//
+    // GESTURES
+    //
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
+        gd.onTouchEvent(event);
+        dragGd.onTouchEvent(event);
+        return true;
+    }
 
 	@Override
-	public void onShowPress(MotionEvent motionEvent)
-	{
-
-	}
-
-	@Override
-	public boolean onSingleTapUp(MotionEvent ev)
-	{
-		if(!componentsRoot.invokeOnTap((int)ev.getX(), (int)ev.getY()))
-		{
-			synchronized (mutex)
-			{
-				currentDisplay.selectObjectUnder(ev.getX(), ev.getY());
-			}
-		}
+	public boolean onSingleTapUp(MotionEvent ev) {
+        Scene activeScene = SceneManager.getActiveScene();
+	    if (activeScene != null)
+	        activeScene.onTap(new TapEvent(ev.getX(), ev.getY()));
 		return true;
 	}
 
 	@Override
-	public boolean onScroll(MotionEvent ev1, MotionEvent ev2, float dx, float dy)
-	{
-		if(!componentsRoot.invokeOnScroll((int) ev1.getX(), (int) ev1.getY(), (int) dx, (int) dy))
-		{
-			synchronized (mutex)
-			{
-				currentDisplay.moveViewportBy(dx, dy);
-			}
-		}
+	public void onLongPress(MotionEvent motionEvent) {
+        Scene activeScene = SceneManager.getActiveScene();
+	    if (activeScene != null)
+	        activeScene.onLongTap(new TapEvent(motionEvent.getX(), motionEvent.getY()));
+	}
+
+	@Override
+	public boolean onDoubleTap(MotionEvent ev) {
+        Scene activeScene = SceneManager.getActiveScene();
+	    if (activeScene != null)
+	        activeScene.onDoubleTap(new TapEvent(ev.getX(), ev.getY()));
 		return true;
 	}
 
-	@Override
-	public void onLongPress(MotionEvent motionEvent)
-	{
-		componentsRoot.invokeOnLongTap((int)motionEvent.getX(), (int)motionEvent.getY());
-	}
+    @Override
+    public void onDragStart(DragEvent ev) {
+        Scene activeScene = SceneManager.getActiveScene();
+        if (activeScene != null)
+            activeScene.onDragStart(ev);
+    }
+
+    @Override
+    public void onDrag(DragEvent ev) {
+        Scene activeScene = SceneManager.getActiveScene();
+        if (activeScene != null)
+            activeScene.onDrag(ev);
+    }
+
+    @Override
+    public void onDragEnd(DragEvent ev) {
+        Scene activeScene = SceneManager.getActiveScene();
+        if (activeScene != null)
+            activeScene.onDragEnd(ev);
+    }
+
+    //
+    // UNUSED
+    //
+
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {}
+
+    @Override
+    public boolean onScroll(MotionEvent ev1, MotionEvent ev2, float dx, float dy) {
+        return false;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
+        return false;
+    }
 
 	@Override
-	public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean onSingleTapConfirmed(MotionEvent motionEvent)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean onDoubleTap(MotionEvent ev)
-	{
-		// TODO: add transitions
-		if(!componentsRoot.invokeOnDoubleTap((int)ev.getX(), (int)ev.getY()))
-		{
-			synchronized (mutex)
-			{
-				AbstractDisplay d = currentDisplay.displayObjectUnder(ev.getX(), ev.getY());
-				if (d != null)
-				{
-					currentDisplay = d;
-					d.getSelectionChangedEvent().subscribe(this);
-					sectorsDisplay.getSelectionChangedEvent().unsubscribe(this);
-				}
-				else
-				{
-					currentDisplay.getSelectionChangedEvent().unsubscribe(this);
-					currentDisplay = sectorsDisplay;
-					sectorsDisplay.getSelectionChangedEvent().subscribe(this);
-				}
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public boolean onDoubleTapEvent(MotionEvent motionEvent)
-	{
+	public boolean onDoubleTapEvent(MotionEvent motionEvent) {
 		return false;
 	}
 }

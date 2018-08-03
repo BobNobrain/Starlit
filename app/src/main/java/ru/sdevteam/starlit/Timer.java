@@ -3,8 +3,7 @@ package ru.sdevteam.starlit;
 /**
  * Created by user on 06.07.2016.
  */
-public class Timer implements Runnable
-{
+public class Timer implements Runnable {
 	private Thread t;
 	public Thread getThread() { return t; }
 
@@ -20,11 +19,10 @@ public class Timer implements Runnable
 	private int fpsStatIndex;
 	private boolean statsEnabled;
 
-	public Timer(String name, Listener listener)
-	{
+	public Timer(String name, Listener listener) {
 		t = new Thread(this);
 		t.setDaemon(true);
-		t.setName("Timer "+name);
+		t.setName("Timer " + name);
 		l = listener;
 		running = false;
 		this.name = name;
@@ -32,54 +30,44 @@ public class Timer implements Runnable
 		statsEnabled = false;
 	}
 
-	public Timer(String name, Listener listener, int frameDuration)
-	{
+	public Timer(String name, Listener listener, int frameDuration) {
 		this(name, listener);
 		dt = frameDuration;
 	}
 
-	public void start()
-	{
+	public void start() {
 		running = true;
 		t.start();
 	}
 
-	public void stop()
-	{
+	public void stop() {
 		running = false;
 	}
 
 	@Override
-	public void run()
-	{
-		while(running)
-		{
-			try
-			{
+	public void run() {
+	    long lastWaited = 0L;
+		while(running) {
+			try {
 				long time = System.currentTimeMillis();
-				l.onTick();
-				long delta = System.currentTimeMillis() - time;
-				if(delta<dt) Thread.sleep(dt-delta);
-				else
-				{
-					//System.out.println(name + ": WARNING! Low fps detected!");
+				l.onTick(time - lastWaited);
+				lastWaited = System.currentTimeMillis();
+				long delta = lastWaited - time;
+				if(delta<dt) {
+					Thread.sleep(dt - delta);
+				} else {
+					// System.out.println(name + ": WARNING! Low fps detected!");
 				}
-				if(statsEnabled)
-				{
-					synchronized (fpsStat)
-					{
+				if(statsEnabled) {
+					synchronized (fpsStat) {
 						fpsStat[fpsStatIndex] = (int)delta;
 					}
 					++fpsStatIndex;
 					if(fpsStatIndex >= fpsStat.length) fpsStatIndex = 0;
 				}
-			}
-			catch (InterruptedException e)
-			{
+			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				System.err.println("CRITICAL! Exception on Timer "+name);
 				System.err.println("Exception says: " + e.getMessage());
 				e.printStackTrace();
@@ -87,30 +75,35 @@ public class Timer implements Runnable
 		}
 	}
 
-	public void enableStats()
-	{
+	public void enableStats() {
 		if(statsEnabled) return;
 		fpsStat = new int[50];
 		fpsStatIndex = 0;
 		statsEnabled = true;
 	}
-	public int getMeanFrameDelay()
-	{
+	public int getMeanFrameDelay() {
 		if(!statsEnabled) return dt;
 
 		int result = 0;
-		for(int i=0; i<fpsStat.length; i++)
-		{
-			synchronized (fpsStat)
-			{
+		for (int i=0; i<fpsStat.length; i++) {
+			synchronized (fpsStat) {
 				result += fpsStat[i];
 			}
 		}
 		return result / fpsStat.length;
 	}
 
-	public interface Listener
-	{
-		void onTick();
+	public void surelyJoin() {
+	    boolean joined = false;
+	    while (!joined) {
+	        try {
+	            t.join();
+	            joined = true;
+            } catch (InterruptedException ex) {}
+        }
+    }
+
+	public interface Listener {
+		void onTick(long dt);
 	}
 }

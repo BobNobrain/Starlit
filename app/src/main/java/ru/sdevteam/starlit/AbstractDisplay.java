@@ -4,11 +4,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import ru.sdevteam.starlit.craft.res.ResAvailability;
+
 import ru.sdevteam.starlit.craft.res.ResClass;
-import ru.sdevteam.starlit.ui.GameUI;
+import ru.sdevteam.starlit.ui.old.GameUI;
 import ru.sdevteam.starlit.utils.Drawing;
-import ru.sdevteam.starlit.utils.MathUtils;
 import ru.sdevteam.starlit.world.Celestial;
 
 /**

@@ -1,7 +1,7 @@
 package ru.sdevteam.starlit;
 
 import android.graphics.*;
-import ru.sdevteam.starlit.ui.GameUI;
+import ru.sdevteam.starlit.ui.old.GameUI;
 import ru.sdevteam.starlit.utils.MathUtils;
 import ru.sdevteam.starlit.world.Sector;
 import ru.sdevteam.starlit.world.Star;

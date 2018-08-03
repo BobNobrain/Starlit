@@ -1,8 +1,8 @@
 package ru.sdevteam.starlit;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import ru.sdevteam.starlit.ui.GameUI;
+
+import ru.sdevteam.starlit.ui.old.GameUI;
 import ru.sdevteam.starlit.utils.MathUtils;
 import ru.sdevteam.starlit.world.Celestial;
 import ru.sdevteam.starlit.world.Planet;
